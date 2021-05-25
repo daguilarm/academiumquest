@@ -12,6 +12,8 @@ class CreateQuestionsTable(Migration):
             table.big_increments('id')
             table.integer('user_id').unsigned()
             table.foreign('user_id').references('id').on('users')
+            table.integer('category_id').unsigned()
+            table.foreign('category_id').references('id').on('categories')
             table.text('question')
             table.text('answers')
             table.char('correct', 1)

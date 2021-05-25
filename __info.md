@@ -10,3 +10,9 @@ orator migrate
 
 # Seed
 orator db:seed --seeder [seederName]
+
+# Design 
+pip3 install pygubu
+pip3 install pygubu-designer 
+
+pygubu-designer
