@@ -1,50 +1,99 @@
-# Created by @daguilarm at 25/5/21
-from tkinter import END, Entry
+from tkinter import ttk, BooleanVar
+from tkinter.ttk import Scrollbar
+from ttkwidgets import Table
+
+# Configuration values
+headers = {
+    'headers': ['Usuario', 'Categoría', 'Preguntas', 'Respuestas'],
+    'columns': ['user', 'category', 'question', 'answers'],
+}
 
 
-class Table:
+# Get the config values
+def get_config():
+    columns = headers['columns']
 
-    # Configuration values
-    __config = {
-        'labels': ['usuario', 'pregunta', 'respuestas'],
-        'columns': ['user_id', 'question', 'answers'],
-        'columns_width': [5, 150, 50],
-        'column_font': ('Arial', 16, 'bold'),
-    }
+    return [
+        # Column labels
+        headers['headers'],
+        # All the columns
+        columns,
+        # Total number of columns
+        len(columns)
+    ]
 
-    def __init__(self, root, results):
 
-        # code for creating table
-        # https://www.geeksforgeeks.org/create-table-using-tkinter/
+# Populate table with values
+def _values(table_columns, result):
+    values = []
+    for index in table_columns:
+        values.append(result[index])
 
-        # Set the variables
-        columns, total_columns, columns_width, column_font, labels = self.__get_config()
+    return values
 
-        # Create the rows
-        i = 0
 
-        for result in results:
-            for j in range(total_columns):
-                text = result[columns[j]]
-                e = Entry(root, width=columns_width[j], fg='blue', font=column_font)
-                e.grid(row=i, column=j)
-                e.insert(END, text)
-            i += 1
+# Add styles to table
+def _table_style(app):
+    style = ttk.Style(app)
+    style.theme_use('alt')
 
-    # Generate a table from sql values
-    def __get_config(self):
-        config = self.__config
-        columns = config['columns']
 
-        return [
-            # All the columns
-            columns,
-            # Total number of columns
-            len(columns),
-            # The list with all the columns widths
-            config['columns_width'],
-            # Column font
-            config['column_font'],
-            # Column labels
-            config['labels']
-        ]
+# Init table
+def _init_table(app, titles):
+    # Add sortable
+    sortable = BooleanVar(app, True)
+
+    # Generate table with the headers
+    return sortable, Table(app, columns=titles, sortable=sortable.get(), height=10)
+
+
+# Render table headers
+def _render_headers(app_table, columns):
+    for col in columns:
+        app_table.heading(col, text=col)
+        app_table.column(col, width=100, stretch=False)
+
+
+# Render rows
+def _render_rows(app_table, columns, results):
+    for result in results:
+        app_table.insert('', 'end', values=_values(columns, result))
+
+
+# Show scroll-bars
+def _show_scroll_bars(app, app_table, table_sortable):
+    x = Scrollbar(app, orient='horizontal', command=app_table.xview)
+    y = Scrollbar(app, orient='vertical', command=app_table.yview)
+    app_table.configure(yscrollcommand=y.set, xscrollcommand=x.set, sortable=table_sortable.get())
+
+    return x, y
+
+
+# Set table grid
+def _table_grid(app_table, x, y):
+    app_table.grid(sticky='ewns')
+    x.grid(row=1, column=0, sticky='ew')
+    y.grid(row=0, column=1, sticky='ns')
+
+# Generate table
+def table(app, results):
+    # Get the configuration values
+    table_th, table_columns, table_total = get_config()
+
+    # Add styles to table
+    _table_style(app)
+
+    # Generate the table with its headers and the sortable option
+    _sortable, _table = _init_table(app, table_th)
+
+    # Render headers
+    _render_headers(_table, table_th)
+
+    # Render the rows
+    _render_rows(_table, table_columns, results)
+
+    # Add the table scrollbars
+    x, y = _show_scroll_bars(app, _table, _sortable)
+
+    # Set table grid
+    _table_grid(_table, x, y)

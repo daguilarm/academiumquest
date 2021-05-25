@@ -23,9 +23,10 @@ def with_insert(self, i):
     """
     self.db.table('questions').insert({
         'user_id': 1,
+        'category_id': random_number(1, 4),
         'question': fake.paragraph(nb_sentences=10),
         'answers': random_answer(),
-        'correct': random_correct_answer(),
+        'correct': random_number(1, 4),
         'type': random_type(),
         'used_at': random_date(),
     })
@@ -41,9 +42,8 @@ def random_answer():
     return json.dumps(result)
 
 
-def random_correct_answer():
-    foo = ('1', '2', '3', '4')
-    return random.choice(foo)
+def random_number(start, end):
+    return random.randint(start, end)
 
 
 def random_date():
