@@ -1,4 +1,5 @@
-from tkinter import ttk, BooleanVar
+import json
+from tkinter import Text, ttk, BooleanVar
 from tkinter.ttk import Scrollbar
 from ttkwidgets import Table
 
@@ -23,15 +24,6 @@ def get_config():
     ]
 
 
-# Populate table with values
-def _values(table_columns, result):
-    values = []
-    for index in table_columns:
-        values.append(result[index])
-
-    return values
-
-
 # Add styles to table
 def _table_style(app):
     style = ttk.Style(app)
@@ -51,13 +43,37 @@ def _init_table(app, titles):
 def _render_headers(app_table, columns):
     for col in columns:
         app_table.heading(col, text=col)
-        app_table.column(col, width=100, stretch=False)
+        app_table.column(col, width=10,  stretch=True)
 
 
 # Render rows
 def _render_rows(app_table, columns, results):
     for result in results:
         app_table.insert('', 'end', values=_values(columns, result))
+
+
+# Populate table with values
+def _values(table_columns, result):
+    values = []
+    for index in table_columns:
+        # This is a JSON array and its needs to be formatted
+        if index == 'answers':
+            item = _values_answers(result[index])
+        else:
+            item = result[index]
+
+        values.append(item)
+
+    return values
+
+
+def _values_answers(values):
+    values = json.loads(values)
+    item = ''
+    for value in values:
+        item += '- ' + value + '\n'
+
+    return item
 
 
 # Show scroll-bars
@@ -74,6 +90,7 @@ def _table_grid(app_table, x, y):
     app_table.grid(sticky='ewns')
     x.grid(row=1, column=0, sticky='ew')
     y.grid(row=0, column=1, sticky='ns')
+
 
 # Generate table
 def table(app, results):
