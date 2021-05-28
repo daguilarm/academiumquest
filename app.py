@@ -134,9 +134,9 @@ class Application(tkinter.Frame):
         # Set the table grid
         self.table.grid(row=1, column=0, columnspan=self.columns_total)
 
-        # Set alternate row colors
-        self.table.tag_configure('even', background='#efefef')
-        self.table.tag_configure('odd', background='#fff')
+        # # Set alternate row colors
+        # self.table.tag_configure('even', background='#efefef')
+        # self.table.tag_configure('odd', background='#fff')
 
     # Order columns by click...
     # https://www.programmersought.com/article/56864033946/
