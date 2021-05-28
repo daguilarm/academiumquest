@@ -1,7 +1,6 @@
 # Created by @daguilarm at 24/5/21
 from faker import Faker
 from orator.seeds import Seeder
-import json
 import random
 
 fake = Faker()
@@ -25,21 +24,15 @@ def with_insert(self, i):
         'user_id': 1,
         'category_id': random_number(1, 4),
         'question': fake.paragraph(nb_sentences=10),
-        'answers': random_answer(),
+        'answer_1': fake.paragraph(nb_sentences=2),
+        'answer_2': fake.paragraph(nb_sentences=1),
+        'answer_3': fake.paragraph(nb_sentences=3),
+        'answer_4': fake.paragraph(nb_sentences=2),
+        'answer_5': fake.paragraph(nb_sentences=1),
         'correct': random_number(1, 4),
         'type': random_type(),
         'used_at': random_date(),
     })
-
-
-def random_answer():
-    result = [
-        fake.paragraph(nb_sentences=2),
-        fake.paragraph(nb_sentences=3),
-        fake.paragraph(nb_sentences=2),
-        fake.paragraph(nb_sentences=4)
-    ]
-    return json.dumps(result)
 
 
 def random_number(start, end):
