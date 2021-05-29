@@ -81,10 +81,14 @@ class Application(tkinter.Frame):
             self.db_direction,
         )
 
+        # Render the table
+        self.render_table(sql_results)
+
+    def render_table(self, sql_results):
         # Set the table headers, columns and sort  the columns
         for (i, col) in enumerate(self.columns):
             # Populate the table headings
-            self.table.heading(col, text=self.headers[i], command=lambda _col=col: self.column_sort(self, _col, False))
+            self.table.heading(col, text=self.headers[i], command=lambda: self.order_table(self.db_direction))
 
             # Define the column width
             column_width_ = static.column_width(self.max_width, self.width[i])
@@ -102,22 +106,19 @@ class Application(tkinter.Frame):
         # Set the table grid
         self.table.grid(row=1, column=0, columnspan=self.columns_total)
 
-    # Order columns by click...
-    # https://www.programmersought.com/article/56864033946/
-    def column_sort(self, col, reverse):
-        # Get the elements
-        elements = [(self.table.set(k, col), k) for k in self.table.get_children('')]
-        elements.sort(reverse=reverse)
+    # Order table
+    def order_table(self, direction):
+        # Define order
+        if direction == 'ASC':
+            self.db_direction = 'DESC'
+        else:
+            self.db_direction = 'ASC'
 
-        # rearrange items in sorted positions
-        for index, (val, k) in enumerate(elements):
-            # Move according to the index after sorting
-            self.table.move(k, '', index)
-
-        # Refresh the table in reverse order
-        self.table.heading(col, command=lambda: self.column_sort(self, col, not reverse))
+        # Re-built the table
+        Application(self.root, self.db_per_page, self.db_page, self.db_order, self.db_direction)
 
 
+# Launch the application
 app = Application(
     tkinter.Tk(),
     config.database['per_page'],
