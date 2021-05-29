@@ -12,9 +12,15 @@ databases = {
 db = DatabaseManager(databases)
 
 
+# Get the table categories
+def categories():
+    return db.table('categories').select('name').get()
+
+
 # Get the table results
-def questions(db_total_pages, db_page, db_order_by, db_direction):
-    return db.\
+def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
+
+    query = db.\
         table('questions').\
         join('categories', 'categories.id', '=', 'questions.category_id').\
         join('users', 'users.id', '=', 'questions.user_id').\
@@ -31,5 +37,10 @@ def questions(db_total_pages, db_page, db_order_by, db_direction):
             'questions.type AS type',
             'questions.used_at AS used',
         ).\
-        order_by(db_order_by, db_direction).\
-        paginate(db_total_pages, db_page)
+        order_by(db_order_by, db_direction)
+
+    if db_filter:
+        query = query.\
+            where(db_filter[0], '=', db_filter[1])
+
+    return query.paginate(db_total_pages, db_page)

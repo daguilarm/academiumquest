@@ -11,7 +11,7 @@ from ttkbootstrap import Style
 
 
 class Application(tkinter.Frame):
-    def __init__(self, root, db_per_page, db_current_page, db_order_by, db_direction):
+    def __init__(self, root, db_per_page, db_current_page, db_order_by, db_direction, db_filter=False):
         # Initialize the application frame
         tkinter.Frame.__init__(self, root)
 
@@ -36,6 +36,7 @@ class Application(tkinter.Frame):
         self.db_page = db_current_page
         self.db_order = db_order_by
         self.db_direction = db_direction
+        self.db_filter = db_filter
 
         # Default application values
         self.table_title = 'Preguntas para EIR y OPE'
@@ -55,11 +56,48 @@ class Application(tkinter.Frame):
         # Initialize the application user interface
         self.__init()
 
+    # Filter by type
+    def filter_by_type_callback(self, event):
+        # Get event
+        selection = event.widget.curselection()
+
+        # Get values
+        if selection:
+            value = event.widget.get(selection[0])
+            self.db_filter = ['type', value]
+            self.table_refresh(self)
+
+    # Filter by type
+    def filter_by_category_callback(self, event):
+        # Get event
+        selection = event.widget.curselection()
+
+        # Get values
+        if selection:
+            value = event.widget.get(selection[0])
+            self.db_filter = ['category', value]
+            self.table_refresh(self)
+
     # Application GUI
     def __init(self):
         # Define the Application Title / Label
         title_label = tkinter.Label(self.root, text=self.table_title, font=('Arial', 40), pady=30)
-        title_label.grid(row=0, columnspan=self.columns_total)
+        title_label.grid(row=0, column=0, columnspan=self.columns_total, sticky='w', padx=20)
+
+        # Filter by type
+        self.filter_by_type = tkinter.Listbox(self.root)
+        self.filter_by_type.grid(row=0, column=1)
+        self.filter_by_type.insert(tkinter.END, 'eir', 'ope')
+
+        # Filter by category
+        self.filter_by_category = tkinter.Listbox(self.root)
+        self.filter_by_category.grid(row=0, column=2)
+        for i in list(sql.categories().flatten().unique()):
+            self.filter_by_category.insert(tkinter.END, i)
+
+        # Filters events
+        self.filter_by_type.bind('<<ListboxSelect>>', self.filter_by_type_callback)
+        self.filter_by_category.bind("<<ListboxSelect>>", self.filter_by_category_callback)
 
         # Set column header style
         self.style.configure('Treeview', rowheight=100, font=('Verdana', 12))
@@ -71,6 +109,7 @@ class Application(tkinter.Frame):
             self.db_page,
             self.db_order,
             self.db_direction,
+            self.db_filter,
         )
 
         # Render the table
@@ -85,7 +124,8 @@ class Application(tkinter.Frame):
         for (i, col) in enumerate(self.columns):
             # Populate the table headings
             # _col for avoid vars by reference in python 3
-            self.table.heading(col, text=self.headers[i], command=lambda _col=col: self.table_order(_col, self.db_direction))
+            self.table.heading(col, text=self.headers[i],
+                               command=lambda _col=col: self.table_order(_col, self.db_direction))
 
             # Define the column width
             column_width_ = static.column_width(self.max_width, self.width[i])
@@ -150,21 +190,27 @@ class Application(tkinter.Frame):
         }
 
         # Prev button
-        button_prev = tkinter.Button(pagination, b_config, text='⇦ Anterior', command=lambda: self.table_prev_page(self.db_page))
+        button_prev = tkinter.Button(pagination, b_config, text='⇦ Anterior',
+                                     command=lambda: self.table_prev_page(self.db_page))
         button_prev.grid(row=12, column=0, padx=10, pady=10)
 
         # Next button
-        button_next = tkinter.Button(pagination, b_config, text='Siguiente ⇨', command=lambda: self.table_next_page(self.db_page, results))
+        button_next = tkinter.Button(pagination, b_config, text='Siguiente ⇨',
+                                     command=lambda: self.table_next_page(self.db_page, results))
         button_next.grid(row=12, column=1, padx=10, pady=10)
 
     # Refresh table
     def table_refresh(self, table):
+        # Reset table
+        self.destroy()
+
         Application(
             table.root,
             table.db_per_page,
             table.db_page,
             table.db_order,
-            table.db_direction
+            table.db_direction,
+            table.db_filter,
         )
 
 
@@ -174,7 +220,8 @@ app = Application(
     config.database['per_page'],
     config.database['page'],
     config.database['order'],
-    config.database['direction']
+    config.database['direction'],
 )
 
+# App event loop
 app.root.mainloop()
