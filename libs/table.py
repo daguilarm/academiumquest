@@ -17,7 +17,7 @@ def columns(self):
     # Insert the rows
     for result in self.results:
         # Populate the list with values
-        list_of_values = static.table_cell_value(self.width, self.max_width, result)
+        list_of_values = static.table_cell_value(self.width, self.max_width, self.columns, result)
 
         self.table.insert("", "end", values=list_of_values)
 

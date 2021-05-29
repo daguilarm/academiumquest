@@ -2,7 +2,7 @@ from tkinter.font import Font
 
 
 # Resolve the table cell value base on the width
-def table_cell_value(columns_width, max_width, row):
+def table_cell_value(columns_width, max_width, columns, row):
     # Default values
     result = []
     # Add all the row values to a list
@@ -11,8 +11,16 @@ def table_cell_value(columns_width, max_width, row):
     for (index, value) in enumerate(values):
         # Get the width % for this column
         width = int(columns_width[index])
+
         # Calculate relative width base on % and screen size
         calculate_width = column_width(max_width, width)
+
+        # If column is a date
+        if columns[index] == 'used':
+            if value == 'null':
+                value = '---'
+            else:
+                value = format_date(value)
 
         # Add the value to the cell, wrapping the content
         result.append(table_cell_wrap(value, calculate_width))
@@ -55,3 +63,11 @@ def table_cell_wrap(val, width, pad=80):
 
         # Join the lines
         return '\n'.join(lines)
+
+
+# Format date from database format
+def format_date(value):
+    date, time = value.split(' ')
+    year, month, day = date.split('-')
+
+    return '/'.join([day, month, year])
