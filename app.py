@@ -56,48 +56,11 @@ class Application(tkinter.Frame):
         # Initialize the application user interface
         self.__init()
 
-    # Filter by type
-    def filter_by_type_callback(self, event):
-        # Get event
-        selection = event.widget.curselection()
-
-        # Get values
-        if selection:
-            value = event.widget.get(selection[0])
-            self.db_filter = ['type', value]
-            self.table_refresh(self)
-
-    # Filter by type
-    def filter_by_category_callback(self, event):
-        # Get event
-        selection = event.widget.curselection()
-
-        # Get values
-        if selection:
-            value = event.widget.get(selection[0])
-            self.db_filter = ['category', value]
-            self.table_refresh(self)
-
     # Application GUI
     def __init(self):
         # Define the Application Title / Label
         title_label = tkinter.Label(self.root, text=self.table_title, font=('Arial', 40), pady=30)
         title_label.grid(row=0, column=0, columnspan=self.columns_total, sticky='w', padx=20)
-
-        # Filter by type
-        self.filter_by_type = tkinter.Listbox(self.root)
-        self.filter_by_type.grid(row=0, column=1)
-        self.filter_by_type.insert(tkinter.END, 'eir', 'ope')
-
-        # Filter by category
-        self.filter_by_category = tkinter.Listbox(self.root)
-        self.filter_by_category.grid(row=0, column=2)
-        for i in list(sql.categories().flatten().unique()):
-            self.filter_by_category.insert(tkinter.END, i)
-
-        # Filters events
-        self.filter_by_type.bind('<<ListboxSelect>>', self.filter_by_type_callback)
-        self.filter_by_category.bind("<<ListboxSelect>>", self.filter_by_category_callback)
 
         # Set column header style
         self.style.configure('Treeview', rowheight=100, font=('Verdana', 12))
@@ -111,6 +74,9 @@ class Application(tkinter.Frame):
             self.db_direction,
             self.db_filter,
         )
+
+        # Add the filters
+        self.filter()
 
         # Render the table
         self.table_render(sql_results)
@@ -198,6 +164,45 @@ class Application(tkinter.Frame):
         button_next = tkinter.Button(pagination, b_config, text='Siguiente ⇨',
                                      command=lambda: self.table_next_page(self.db_page, results))
         button_next.grid(row=12, column=1, padx=10, pady=10)
+
+    # Define the filters
+    def filter(self):
+        # Filter by type
+        filter_by_type = tkinter.Listbox(self.root, font=('Arial', 14))
+        filter_by_type.grid(row=0, column=1)
+        filter_by_type.insert(tkinter.END, 'eir', 'ope')
+        # Filter events
+        filter_by_type.bind('<<ListboxSelect>>', self.filter_by_type_callback)
+
+        # Filter by category
+        filter_by_category = tkinter.Listbox(self.root, font=('Arial', 14))
+        filter_by_category.grid(row=0, column=2)
+        for i in list(sql.categories().flatten().unique()):
+            filter_by_category.insert(tkinter.END, i)
+        # Filter events
+        filter_by_category.bind("<<ListboxSelect>>", self.filter_by_category_callback)
+
+    # Filter by type
+    def filter_by_type_callback(self, event):
+        # Get event
+        selection = event.widget.curselection()
+
+        # Get values
+        if selection:
+            value = event.widget.get(selection[0])
+            self.db_filter = ['type', value]
+            self.table_refresh(self)
+
+    # Filter by type
+    def filter_by_category_callback(self, event):
+        # Get event
+        selection = event.widget.curselection()
+
+        # Get values
+        if selection:
+            value = event.widget.get(selection[0])
+            self.db_filter = ['category', value]
+            self.table_refresh(self)
 
     # Refresh table
     def table_refresh(self, table):
