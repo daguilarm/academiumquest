@@ -2,15 +2,23 @@ import config
 import orm as sql
 import libs.table
 import tkinter
+from menu import MenuBar
 from tkinter import ttk
 
 
 class Application(tkinter.Frame):
 
     def __init__(self, root):
+        # Define application frame
+        tkinter.Frame.__init__(self, root)
+
         # Define root
         self.root = root
 
+        # Define menu
+        self.menu = MenuBar(self)
+        self.root.config(menu=self.menu)
+        
         # Configure the root object for the Application
         self.root.title("Academium Quest - Premium version")
         self.root.grid_rowconfigure(0, weight=1)
