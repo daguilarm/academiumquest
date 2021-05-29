@@ -5,7 +5,7 @@ columns = {
     'columns': ['id', 'user', 'category', 'question', 'answer_1', 'answer_2', 'answer_3', 'answer_4', 'correct', 'type',
                 'used'],
     # Width in %
-    'width': ['1', '5', '5', '40', '10', '10', '10', '10', '2', '2', '4'],
+    'width': ['2', '5', '4', '40', '9', '9', '9', '9', '4', '4', '5'],
 }
 
 # Data base

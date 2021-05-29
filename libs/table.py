@@ -11,8 +11,8 @@ def columns(self):
         # Define the column width
         column_width_ = static.column_width(self.max_width, self.width[i])
 
-        # Applicative the column width
-        self.table.column(col, width=column_width_)
+        # Config the columns
+        self.table.column(col, width=column_width_, anchor='center')
 
     # Insert the rows
     for result in self.results:
