@@ -1,15 +1,15 @@
 import config
 import orm as sql
-import libs.table
 import tkinter
+
+from libs import static
 from menu import MenuBar
 from tkinter import ttk
 from ttkbootstrap import Style
 
 
 class Application(tkinter.Frame):
-
-    def __init__(self, root):
+    def __init__(self, root, db_per_page, db_current_page, db_order_by, db_direction):
         # Initialize the application frame
         tkinter.Frame.__init__(self, root)
 
@@ -30,21 +30,13 @@ class Application(tkinter.Frame):
         self.style.theme_use('minty')
 
         # Set default database values
-        self.db_per_page = config.database['per_page']
-        self.db_page = config.database['page']
-        self.db_order = config.database['order']
-        self.db_direction = config.database['direction']
+        self.db_per_page = db_per_page
+        self.db_page = db_current_page
+        self.db_order = db_order_by
+        self.db_direction = db_direction
 
         # Default application values
         self.table_title = 'Preguntas para EIR y OPE'
-
-        # Define results
-        self.results = sql.questions(
-            self.db_per_page,
-            self.db_page,
-            self.db_order,
-            self.db_direction,
-        )
 
         # Define table columns variables
         self.columns = config.columns['columns']
@@ -57,6 +49,16 @@ class Application(tkinter.Frame):
 
         # Max application width
         self.max_width = int(self.table.winfo_screenwidth())
+
+        # Create pagination buttons
+        b1 = tkinter.Button(self.root, text='Next >', fg='black',
+                            command=lambda: Application(self.root,
+                                                        config.database['per_page'],
+                                                        (self.db_page + 1),
+                                                        config.database['order'],
+                                                        config.database['direction']
+                                                        ))
+        b1.grid(row=12, column=1)
 
         # Initialize the application user interface
         self.__init()
@@ -71,12 +73,56 @@ class Application(tkinter.Frame):
         self.style.configure('Treeview', rowheight=100, font=('Verdana', 12))
         self.style.configure('Treeview.Heading', padding=15, font=('Verdana', 14))
 
+        # Get the values from the database
+        sql_results = sql.questions(
+            self.db_per_page,
+            self.db_page,
+            self.db_order,
+            self.db_direction,
+        )
+
         # Set the table headers, columns and sort  the columns
-        libs.table.columns(self)
+        for (i, col) in enumerate(self.columns):
+            # Populate the table headings
+            self.table.heading(col, text=self.headers[i], command=lambda _col=col: self.column_sort(self, _col, False))
+
+            # Define the column width
+            column_width_ = static.column_width(self.max_width, self.width[i])
+
+            # Config the columns
+            self.table.column(col, width=column_width_, anchor='center')
+
+        # Insert the rows
+        for result in sql_results:
+            # Populate the list with values
+            list_of_values = static.table_cell_value(self.width, self.max_width, self.columns, result)
+
+            self.table.insert("", "end", values=list_of_values)
 
         # Set the table grid
         self.table.grid(row=1, column=0, columnspan=self.columns_total)
 
+    # Order columns by click...
+    # https://www.programmersought.com/article/56864033946/
+    def column_sort(self, col, reverse):
+        # Get the elements
+        elements = [(self.table.set(k, col), k) for k in self.table.get_children('')]
+        elements.sort(reverse=reverse)
 
-app = Application(tkinter.Tk())
+        # rearrange items in sorted positions
+        for index, (val, k) in enumerate(elements):
+            # Move according to the index after sorting
+            self.table.move(k, '', index)
+
+        # Refresh the table in reverse order
+        self.table.heading(col, command=lambda: self.column_sort(self, col, not reverse))
+
+
+app = Application(
+    tkinter.Tk(),
+    config.database['per_page'],
+    config.database['page'],
+    config.database['order'],
+    config.database['direction']
+)
 app.root.mainloop()

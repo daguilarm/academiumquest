@@ -11,7 +11,7 @@ columns = {
 # Data base
 database = {
     'per_page': 10,
-    'page': 0,
+    'page': 1,
     'order': 'questions.id',
     'direction': 'ASC'
 }
