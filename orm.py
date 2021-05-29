@@ -13,7 +13,7 @@ db = DatabaseManager(databases)
 
 
 # Get the table results
-def questions_results(db_total_pages, db_page, db_order_by, db_direction):
+def questions(db_total_pages, db_page, db_order_by, db_direction):
     return db.\
         table('questions').\
         join('categories', 'categories.id', '=', 'questions.category_id').\
