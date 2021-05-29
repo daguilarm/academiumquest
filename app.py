@@ -1,3 +1,5 @@
+import time
+
 import config
 import orm as sql
 import tkinter
@@ -82,7 +84,8 @@ class Application(tkinter.Frame):
         # Set the table headers, columns and sort  the columns
         for (i, col) in enumerate(self.columns):
             # Populate the table headings
-            self.table.heading(col, text=self.headers[i], command=lambda: self.table_order(self.db_direction))
+            # _col for avoid vars by reference in python 3
+            self.table.heading(col, text=self.headers[i], command=lambda _col=col: self.table_order(_col, self.db_direction))
 
             # Define the column width
             column_width_ = static.column_width(self.max_width, self.width[i])
@@ -101,12 +104,15 @@ class Application(tkinter.Frame):
         self.table.grid(row=1, column=0, columnspan=self.columns_total)
 
     # Order table
-    def table_order(self, direction):
+    def table_order(self, order_by, direction):
         # Define order
         if direction == 'ASC':
             self.db_direction = 'DESC'
         else:
             self.db_direction = 'ASC'
+
+        # Define column to order by...
+        self.db_order = order_by
 
         # Refresh the table
         self.table_refresh(self)
@@ -134,12 +140,21 @@ class Application(tkinter.Frame):
         pagination = tkinter.Frame(self.root)
         pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=40)
 
+        # Button config
+        b_config = {
+            'fg': '#333333',
+            'font': ('Arial', 18),
+            'width': 40,
+            'padx': 20,
+            'pady': 20,
+        }
+
         # Prev button
-        button_prev = tkinter.Button(pagination, text='⇦ Anterior', fg='#333333', command=lambda: self.table_prev_page(self.db_page), width=40, padx=20, pady=20, font=('Arial', 18))
+        button_prev = tkinter.Button(pagination, b_config, text='⇦ Anterior', command=lambda: self.table_prev_page(self.db_page))
         button_prev.grid(row=12, column=0, padx=10, pady=10)
 
         # Next button
-        button_next = tkinter.Button(pagination, text='Siguiente ⇨', fg='#333333', command=lambda: self.table_next_page(self.db_page, results), width=40, padx=20, pady=20, font=('Arial', 18))
+        button_next = tkinter.Button(pagination, b_config, text='Siguiente ⇨', command=lambda: self.table_next_page(self.db_page, results))
         button_next.grid(row=12, column=1, padx=10, pady=10)
 
     # Refresh table
