@@ -1,6 +1,6 @@
 # Columns
 columns = {
-    'headers': ['ID', 'Usuario', 'Categoría', 'Preguntas', 'Respuesta 1', 'Respuesta 2', 'Respuesta 3', 'Respuesta 4',
+    'headers': ['ID', 'Usuario', 'Asignatura', 'Preguntas', 'Respuesta 1', 'Respuesta 2', 'Respuesta 3', 'Respuesta 4',
                 'Correcta', 'Tipo', 'Utilizada en...'],
     'columns': ['id', 'user', 'category', 'question', 'answer_1', 'answer_2', 'answer_3', 'answer_4', 'correct', 'type',
                 'used'],

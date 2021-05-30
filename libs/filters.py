@@ -12,9 +12,6 @@ class Filters:
         self.filter_by_category = self.filter_by_category()
         self.filter_by_used = self.filter_by_used()
 
-        # Set the default values for the filters
-        self.default_values_for_filters()
-
     def filter_by_used(self):
         filter_used = ttk.Checkbutton(self.app.root, text='Preguntas sin usar')
         filter_used.grid(row=0, column=1, padx=5, pady=5, sticky='e')
@@ -39,9 +36,9 @@ class Filters:
 
         # Get values
         if value:
-            self.app.table.db_filter.update(type=value)
-            self.app.table.db_page = 1
-            self.app.table.refresh(self.app.table)
+            self.app.db_filter.update(type=value)
+            self.app.db_page = 1
+            self.app.refresh(self.app)
 
     # Filter by category
     def filter_by_category(self):
@@ -65,14 +62,6 @@ class Filters:
 
         # Get values
         if value:
-            self.app.table.db_filter.update(category=value)
-            self.app.table.db_page = 1
-            self.app.refresh(self.app.table)
-
-    # Set the default values for filters
-    def default_values_for_filters(self):
-        # Select default value
-        for key, value in self.app.table.db_filter.items():
-            # Create a dynamic value
-            current_filter = "filter_by_{}".format(key)
-            locals()[current_filter].set(value)
+            self.app.db_filter.update(category=value)
+            self.app.db_page = 1
+            self.app.refresh(self.app)

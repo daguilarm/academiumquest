@@ -1,7 +1,5 @@
 import config
 import tkinter
-
-from libs.filters import Filters
 from libs.table import Table
 from menu import MenuBar
 from ttkbootstrap import Style
@@ -20,7 +18,6 @@ class Application(tkinter.Frame):
         self.root.config(menu=self.menu)
 
         # Configure the root for the Application
-        self.title = 'Preguntas para EIR y OPE'
         self.root.title("Academium Quest - Premium version")
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
@@ -49,10 +46,6 @@ class Application(tkinter.Frame):
 
     # Application GUI
     def __init(self):
-        # Define the Application Title / Label
-        title_label = tkinter.Label(self.root, text=self.title, font=('Verdana', 40), pady=20)
-        title_label.grid(row=0, column=0, columnspan=self.columns_total, sticky='w', padx=20)
-
         # Set column header style
         self.style.configure('Treeview', rowheight=100, font=('Verdana', 12))
         self.style.configure('Treeview.Heading', padding=15, font=('Verdana', 14), relief='ridge')
@@ -71,9 +64,6 @@ class Application(tkinter.Frame):
             config.database['direction'],
             config.database['filter'],
         )
-
-        # Set the filters
-        self.filters = Filters(self)
 
 
 # Launch the application

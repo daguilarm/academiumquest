@@ -2,7 +2,9 @@ import config
 import libs.orm as sql
 import tkinter
 from tkinter import ttk
+from libs.filters import Filters
 from libs import static
+
 
 # Create table
 class Table:
@@ -18,6 +20,9 @@ class Table:
     ):
         # Default root
         self.root = root
+
+        # Table name
+        self.title = 'Preguntas para EIR y OPE'
 
         # Set default database values
         self.db_per_page = db_per_page
@@ -40,6 +45,9 @@ class Table:
         self.pagination = tkinter.Frame(self.root)
         self.pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=20)
 
+        # Current filters
+        self.current_filters = []
+
         # Get the values from the database
         results = sql.questions(
             self.db_per_page,
@@ -55,14 +63,24 @@ class Table:
         # Render pagination
         self.table_pagination(results)
 
+        # Filters
+        self.filters = Filters(self)
+
     # Render the table
     def render(self, results):
+        title = '{} - Con los filtros: {}'.format(self.title, ', '.join(self.db_filter.values()))
+        title_label = tkinter.Label(self.root, text=title, font=('Verdana', 30), pady=20)
+        title_label.grid(row=0, column=0, columnspan=self.columns_total, sticky='w', padx=20)
+
         # Set the table headers, columns and sort  the columns
         for (i, col) in enumerate(self.columns):
             # Populate the table headings
             # _col for avoid vars by reference in python 3
-            self.table.heading(col, text=self.headers[i],
-                               command=lambda _col=col: self.sort(_col, self.db_direction))
+            self.table.heading(
+                col,
+                text=self.headers[i],
+                command=lambda _col=col: self.sort(_col, self.db_direction)
+            )
 
             # Define the column width
             column_width_ = static.column_width(self.max_width, self.width[i])
@@ -73,7 +91,12 @@ class Table:
         # Insert the rows
         for result in results:
             # Populate the list with values
-            list_of_values = static.table_cell_value(self.width, self.max_width, self.columns, result)
+            list_of_values = static.table_cell_value(
+                self.width,
+                self.max_width,
+                self.columns,
+                result
+            )
 
             self.table.insert("", "end", values=list_of_values)
 
@@ -82,14 +105,18 @@ class Table:
 
     # Table pagination
     def table_pagination(self, results):
-
         # Pagination label
         label_title = 'Mostrando página {} de {} páginas, de un total de {} resultados'.format(
             results.current_page,
             results.last_page,
             results.total
         )
-        self.pagination.label = tkinter.Label(self.pagination, text=label_title, font=('Verdana', 16), fg="#999999")
+        self.pagination.label = tkinter.Label(
+            self.pagination,
+            text=label_title,
+            font=('Verdana', 16),
+            fg="#999999"
+        )
         self.pagination.label.grid(row=11, column=0, columnspan=self.columns_total, padx=60, pady=(0, 15))
 
         # Button config
@@ -116,7 +143,7 @@ class Table:
             width=10,
             pady=20,
             text='⟳ Reiniciar',
-            command=lambda: self.reset,
+            command=lambda: self.reset(self),
             foreground='red'
         ).grid(row=12, column=1, padx=10)
 
@@ -176,10 +203,10 @@ class Table:
         )
 
     # Reset table
-    def reset(self, table):
+    def reset(self, app):
         self.table = Table(
-            table.root,
-            table.max_width,
+            app.root,
+            app.max_width,
             config.database['per_page'],
             config.database['page'],
             config.database['order'],
