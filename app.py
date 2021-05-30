@@ -11,7 +11,7 @@ from ttkbootstrap import Style
 
 
 class Application(tkinter.Frame):
-    def __init__(self, root, db_per_page, db_current_page, db_order_by, db_direction, db_filter=False):
+    def __init__(self, root, db_per_page, db_current_page, db_order_by, db_direction, db_filter={}):
         # Initialize the application frame
         tkinter.Frame.__init__(self, root)
 
@@ -66,6 +66,10 @@ class Application(tkinter.Frame):
         self.style.configure('Treeview', rowheight=100, font=('Verdana', 12))
         self.style.configure('Treeview.Heading', padding=15, font=('Verdana', 14), relief='ridge')
 
+        # Set the combobox font
+        combobox_font = tkinter.font.Font(family="Verdana", size=28)
+        self.root.option_add("*TCombobox*Listbox*Font", combobox_font)
+
         # Get the values from the database
         sql_results = sql.questions(
             self.db_per_page,
@@ -76,7 +80,7 @@ class Application(tkinter.Frame):
         )
 
         # Add the filters
-        self.filter()
+        self.table_filter()
 
         # Render the table
         self.table_render(sql_results)
@@ -166,43 +170,63 @@ class Application(tkinter.Frame):
         button_next.grid(row=12, column=1, padx=10, pady=10)
 
     # Define the filters
-    def filter(self):
+    def table_filter(self):
+        # Reset
+        filter_reset = ttk.Button(self.root, text='Reiniciar', command=lambda :self.table_reset())
+        filter_reset.grid(row=0, column=0, padx=5, pady=5, sticky='e')
+
         # Filter by type
-        filter_by_type = tkinter.Listbox(self.root, font=('Arial', 14))
-        filter_by_type.grid(row=0, column=1)
-        filter_by_type.insert(tkinter.END, 'eir', 'ope')
-        # Filter events
-        filter_by_type.bind('<<ListboxSelect>>', self.filter_by_type_callback)
+        filter_by_type = ttk.Combobox(self.root, values=['eir', 'ope'], font=('Verdana', 18), state="readonly")
+        filter_by_type.grid(row=0, column=2, padx=5, pady=5)
+        filter_by_type.bind('<<ComboboxSelected>>', self.filter_by_type_callback)
 
         # Filter by category
-        filter_by_category = tkinter.Listbox(self.root, font=('Arial', 14))
-        filter_by_category.grid(row=0, column=2)
-        for i in list(sql.categories().flatten().unique()):
-            filter_by_category.insert(tkinter.END, i)
-        # Filter events
-        filter_by_category.bind("<<ListboxSelect>>", self.filter_by_category_callback)
+        filter_by_category_values = list(sql.categories().flatten().unique())
+        filter_by_category = ttk.Combobox(self.root, values=filter_by_category_values, font=('Verdana', 18),
+                                          state="readonly")
+        filter_by_category.grid(row=0, column=1, padx=5, pady=5, sticky='e')
+        filter_by_category.bind('<<ComboboxSelected>>', self.filter_by_category_callback)
+
+        # Select default value
+        for key, value in self.db_filter.items():
+            # Create a dynamic value
+            current_filter = "filter_by_{}".format(key)
+            locals()[current_filter].set(value)
+
 
     # Filter by type
     def filter_by_type_callback(self, event):
         # Get event
-        selection = event.widget.curselection()
+        value = event.widget.get()
 
         # Get values
-        if selection:
-            value = event.widget.get(selection[0])
-            self.db_filter = ['type', value]
+        if value:
+            self.db_filter.update(type=value)
             self.table_refresh(self)
 
     # Filter by type
     def filter_by_category_callback(self, event):
         # Get event
-        selection = event.widget.curselection()
+        value = event.widget.get()
 
         # Get values
-        if selection:
-            value = event.widget.get(selection[0])
-            self.db_filter = ['category', value]
+        if value:
+            self.db_filter.update(category=value)
             self.table_refresh(self)
+
+    # Reset table
+    def table_reset(self):
+        # Reset table
+        self.destroy()
+
+        Application(
+            self.root,
+            config.database['per_page'],
+            config.database['page'],
+            config.database['order'],
+            config.database['direction'],
+            {},
+        )
 
     # Refresh table
     def table_refresh(self, table):

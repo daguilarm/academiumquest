@@ -1,6 +1,5 @@
 from tkinter.font import Font
 
-
 # Resolve the table cell value base on the width
 def table_cell_value(columns_width, max_width, columns, row):
     # Default values
