@@ -150,6 +150,11 @@ class Application(tkinter.Frame):
         pagination = tkinter.Frame(self.root)
         pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=40)
 
+        # Pagination label
+        label_title = 'Mostrando página {} de {} páginas, de un total de {} resultados'.format(results.current_page, results.last_page, results.total)
+        label = tkinter.Label(self.root, text=label_title, font=('Verdana', 16), fg="#999999")
+        label.grid(row=11, column=0, columnspan=self.columns_total, padx=20, pady=(30, 0))
+
         # Button config
         b_config = {
             'fg': '#333333',
@@ -162,12 +167,12 @@ class Application(tkinter.Frame):
         # Prev button
         button_prev = tkinter.Button(pagination, b_config, text='⇦ Anterior',
                                      command=lambda: self.table_prev_page(self.db_page))
-        button_prev.grid(row=12, column=0, padx=10, pady=10)
+        button_prev.grid(row=12, column=0, padx=10)
 
         # Next button
         button_next = tkinter.Button(pagination, b_config, text='Siguiente ⇨',
                                      command=lambda: self.table_next_page(self.db_page, results))
-        button_next.grid(row=12, column=1, padx=10, pady=10)
+        button_next.grid(row=12, column=1, padx=10)
 
     # Define the filters
     def table_filter(self):
