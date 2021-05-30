@@ -3,7 +3,7 @@ import libs.orm as sql
 import tkinter
 from tkinter import ttk
 from libs import static
-
+from libs.filters import Filters
 
 # Create table
 class Table:
@@ -55,6 +55,8 @@ class Table:
 
         # Render pagination
         self.table_pagination(results)
+
+        Filters(self)
 
     # Render the table
     def render(self, results):
@@ -146,22 +148,9 @@ class Table:
             # Refresh the table
             self.refresh(self)
 
-    # Reset table
-    def table_reset(self):
-        Table(
-            self.root,
-            self.max_width,
-            config.database['per_page'],
-            config.database['page'],
-            config.database['order'],
-            config.database['direction'],
-            config.database['filter'],
-        )
-
     # Refresh table
-    # Dont follow the advice from pycharm... this function cannot be static!!
     def refresh(self, table):
-        Table(
+        self.table = Table(
             table.root,
             table.max_width,
             table.db_per_page,
@@ -169,4 +158,16 @@ class Table:
             table.db_order,
             table.db_direction,
             table.db_filter,
+        )
+
+    # Reset table
+    def reset(self, table):
+        self.table = Table(
+            table.root,
+            table.max_width,
+            config.database['per_page'],
+            config.database['page'],
+            config.database['order'],
+            config.database['direction'],
+            config.database['filter'],
         )

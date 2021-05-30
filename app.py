@@ -1,7 +1,5 @@
 import config
 import tkinter
-
-from libs.filters import Filters
 from libs.table import Table
 from menu import MenuBar
 from ttkbootstrap import Style
@@ -68,10 +66,6 @@ class Application(tkinter.Frame):
             config.database['direction'],
             config.database['filter'],
         )
-
-        # Create the filters
-        self.filter = Filters(self.table)
-
 
 # Launch the application
 app = Application(tkinter.Tk())
