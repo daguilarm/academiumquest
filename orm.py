@@ -1,11 +1,12 @@
 # Created by @daguilarm at 24/5/21
+import orator
 from orator import DatabaseManager
 
 databases = {
     'sqlite': {
         'driver': 'sqlite',
         'database': './database/sqlite.db',
-        'prefix': ''
+        'prefix': '',
     }
 }
 
@@ -42,7 +43,8 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
     # Multiple filter [type, category]
     if db_filter:
         for key, value in db_filter.items():
-            query = query.\
-                where(key, '=', value)
+            if key and value:
+                query = query.\
+                    where(key, '=', value)
 
     return query.paginate(db_total_pages, db_page)

@@ -50,6 +50,10 @@ class Application(tkinter.Frame):
         # Create the table
         self.table = ttk.Treeview(self.root, columns=self.columns, show='headings')
 
+        # Create pagination
+        self.pagination = tkinter.Frame(self.root)
+        self.pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=20)
+
         # Max application width
         self.max_width = int(self.table.winfo_screenwidth())
 
@@ -146,14 +150,10 @@ class Application(tkinter.Frame):
             self.table_refresh(self)
 
     def table_pagination(self, results):
-        # Pagination frame
-        pagination = tkinter.Frame(self.root)
-        pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=20)
-
         # Pagination label
         label_title = 'Mostrando página {} de {} páginas, de un total de {} resultados'.format(results.current_page, results.last_page, results.total)
-        label = tkinter.Label(self.root, text=label_title, font=('Verdana', 16), fg="#999999")
-        label.grid(row=11, column=0, columnspan=self.columns_total, padx=20, pady=(30, 0))
+        self.pagination.label = tkinter.Label(self.pagination, text=label_title, font=('Verdana', 16), fg="#999999")
+        self.pagination.label.grid(row=11, column=0, columnspan=self.columns_total, padx=60, pady=(0, 15))
 
         # Button config
         b_config = {
@@ -165,12 +165,12 @@ class Application(tkinter.Frame):
         }
 
         # Prev button
-        button_prev = tkinter.Button(pagination, b_config, text='⇦ Anterior',
+        button_prev = tkinter.Button(self.pagination, b_config, text='⇦ Anterior',
                                      command=lambda: self.table_prev_page(self.db_page), foreground="#666666")
         button_prev.grid(row=12, column=0, padx=10)
 
         # Next button
-        button_next = tkinter.Button(pagination, b_config, text='Siguiente ⇨',
+        button_next = tkinter.Button(self.pagination, b_config, text='Siguiente ⇨',
                                      command=lambda: self.table_next_page(self.db_page, results), foreground="#666666")
         button_next.grid(row=12, column=1, padx=10)
 
