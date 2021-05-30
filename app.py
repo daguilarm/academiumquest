@@ -180,17 +180,21 @@ class Application(tkinter.Frame):
         filter_reset = ttk.Button(self.root, text='Reiniciar', command=lambda: self.table_reset())
         filter_reset.grid(row=0, column=0, padx=5, pady=5, sticky='e')
 
-        # Filter by type
-        filter_by_type = ttk.Combobox(self.root, values=['eir', 'ope'], font=('Verdana', 18), state="readonly")
-        filter_by_type.grid(row=0, column=2, padx=5, pady=5)
-        filter_by_type.bind('<<ComboboxSelected>>', self.filter_by_type_callback)
+        # Not used
+        filter_used = ttk.Checkbutton(self.root, text='Preguntas sin usar')
+        filter_used.grid(row=0, column=1, padx=5, pady=5, sticky='e')
 
         # Filter by category
         filter_by_category_values = list(sql.categories().flatten().unique())
         filter_by_category = ttk.Combobox(self.root, values=filter_by_category_values, font=('Verdana', 18),
                                           state="readonly")
-        filter_by_category.grid(row=0, column=1, padx=5, pady=5, sticky='e')
+        filter_by_category.grid(row=0, column=2, padx=5, pady=5, sticky='e')
         filter_by_category.bind('<<ComboboxSelected>>', self.filter_by_category_callback)
+
+        # Filter by type
+        filter_by_type = ttk.Combobox(self.root, values=['eir', 'ope'], font=('Verdana', 18), state="readonly")
+        filter_by_type.grid(row=0, column=3, padx=5, pady=5)
+        filter_by_type.bind('<<ComboboxSelected>>', self.filter_by_type_callback)
 
         # Select default value
         for key, value in self.db_filter.items():
