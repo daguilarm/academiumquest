@@ -3,7 +3,6 @@ import libs.orm as sql
 import tkinter
 from tkinter import ttk
 from libs import static
-from libs.filters import Filters
 
 # Create table
 class Table:
@@ -56,8 +55,6 @@ class Table:
         # Render pagination
         self.table_pagination(results)
 
-        Filters(self)
-
     # Render the table
     def render(self, results):
         # Set the table headers, columns and sort  the columns
@@ -97,7 +94,6 @@ class Table:
 
         # Button config
         b_config = {
-            'fg': '#333333',
             'font': ('Verdana', 18),
             'width': 40,
             'padx': 20,
@@ -105,14 +101,33 @@ class Table:
         }
 
         # Prev button
-        button_prev = tkinter.Button(self.pagination, b_config, text='⇦ Anterior',
-                                     command=lambda: self.prev_page(self.db_page), foreground="#666666")
-        button_prev.grid(row=12, column=0, padx=10)
+        tkinter.Button(
+            self.pagination,
+            b_config,
+            text='⇦ Anterior',
+            command=lambda: self.prev_page(self.db_page),
+            foreground='#666666'
+        ).grid(row=12, column=0, padx=10)
+
+        # Reset table
+        tkinter.Button(
+            self.pagination,
+            font=('Verdana', 18),
+            width=10,
+            pady=20,
+            text='⟳ Reiniciar',
+            command=lambda: self.reset,
+            foreground='red'
+        ).grid(row=12, column=1, padx=10)
 
         # Next button
-        button_next = tkinter.Button(self.pagination, b_config, text='Siguiente ⇨',
-                                     command=lambda: self.next_page(self.db_page, results), foreground="#666666")
-        button_next.grid(row=12, column=1, padx=10)
+        tkinter.Button(
+            self.pagination,
+            b_config,
+            text='Siguiente ⇨',
+            command=lambda: self.next_page(self.db_page, results),
+            foreground='#666666'
+        ).grid(row=12, column=2, padx=10)
 
     # Order table columns
     def sort(self, order_by, direction):
@@ -149,15 +164,15 @@ class Table:
             self.refresh(self)
 
     # Refresh table
-    def refresh(self, table):
+    def refresh(self, app):
         self.table = Table(
-            table.root,
-            table.max_width,
-            table.db_per_page,
-            table.db_page,
-            table.db_order,
-            table.db_direction,
-            table.db_filter,
+            app.root,
+            app.max_width,
+            app.db_per_page,
+            app.db_page,
+            app.db_order,
+            app.db_direction,
+            app.db_filter,
         )
 
     # Reset table
