@@ -1,5 +1,3 @@
-import time
-
 import config
 import orm as sql
 import tkinter
@@ -11,11 +9,13 @@ from ttkbootstrap import Style
 
 
 class Application(tkinter.Frame):
-    def __init__(self, root, db_per_page, db_current_page, db_order_by, db_direction, db_filter={}):
+    def __init__(self, root, db_per_page, db_current_page, db_order_by, db_direction, db_filter=None):
         # Initialize the application frame
         tkinter.Frame.__init__(self, root)
 
         # Define the application root
+        if db_filter is None:
+            db_filter = {}
         self.root = root
 
         # Define the application menu
@@ -172,7 +172,7 @@ class Application(tkinter.Frame):
     # Define the filters
     def table_filter(self):
         # Reset
-        filter_reset = ttk.Button(self.root, text='Reiniciar', command=lambda :self.table_reset())
+        filter_reset = ttk.Button(self.root, text='Reiniciar', command=lambda: self.table_reset())
         filter_reset.grid(row=0, column=0, padx=5, pady=5, sticky='e')
 
         # Filter by type
@@ -192,7 +192,6 @@ class Application(tkinter.Frame):
             # Create a dynamic value
             current_filter = "filter_by_{}".format(key)
             locals()[current_filter].set(value)
-
 
     # Filter by type
     def filter_by_type_callback(self, event):
