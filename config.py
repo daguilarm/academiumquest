@@ -13,5 +13,6 @@ database = {
     'per_page': 10,
     'page': 1,
     'order': 'id',
-    'direction': 'ASC'
+    'direction': 'ASC',
+    'filter': {},
 }

@@ -1,21 +1,24 @@
 import config
+import libs.orm as sql
 import tkinter
 from tkinter import ttk
 from libs import static
 
 
-class Table():
+# Create table
+class Table:
     def __init__(
             self,
             root,
+            max_width,
             db_per_page,
             db_current_page,
             db_order_by,
             db_direction,
-            db_filter=None
+            db_filter=None,
     ):
-        # Table name
-        self.table_title = 'Preguntas para EIR y OPE'
+        # Default root
+        self.root = root
 
         # Set default database values
         self.db_per_page = db_per_page
@@ -29,6 +32,7 @@ class Table():
         self.columns_total = len(self.columns)
         self.headers = config.columns['headers']
         self.width = config.columns['width']
+        self.max_width = max_width
 
         # Create the table
         self.table = ttk.Treeview(self.root, columns=self.columns, show='headings')
@@ -37,8 +41,23 @@ class Table():
         self.pagination = tkinter.Frame(self.root)
         self.pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=20)
 
+        # Get the values from the database
+        results = sql.questions(
+            self.db_per_page,
+            self.db_page,
+            self.db_order,
+            self.db_direction,
+            self.db_filter,
+        )
+
+        # Render table
+        self.render(results)
+
+        # Render pagination
+        self.table_pagination(results)
+
     # Render the table
-    def render(self, sql_results):
+    def render(self, results):
         # Set the table headers, columns and sort  the columns
         for (i, col) in enumerate(self.columns):
             # Populate the table headings
@@ -53,7 +72,7 @@ class Table():
             self.table.column(col, width=column_width_, anchor='center')
 
         # Insert the rows
-        for result in sql_results:
+        for result in results:
             # Populate the list with values
             list_of_values = static.table_cell_value(self.width, self.max_width, self.columns, result)
 
@@ -63,9 +82,14 @@ class Table():
         self.table.grid(row=1, column=0, columnspan=self.columns_total)
 
     # Table pagination
-    def pagination(self, results):
+    def table_pagination(self, results):
+
         # Pagination label
-        label_title = 'Mostrando página {} de {} páginas, de un total de {} resultados'.format(results.current_page, results.last_page, results.total)
+        label_title = 'Mostrando página {} de {} páginas, de un total de {} resultados'.format(
+            results.current_page,
+            results.last_page,
+            results.total
+        )
         self.pagination.label = tkinter.Label(self.pagination, text=label_title, font=('Verdana', 16), fg="#999999")
         self.pagination.label.grid(row=11, column=0, columnspan=self.columns_total, padx=60, pady=(0, 15))
 
@@ -100,47 +124,46 @@ class Table():
         self.db_order = order_by
 
         # Refresh the table
-        self.table_refresh(self)
+        self.refresh(self)
 
-    # Pagination: previus page
+    # Pagination: previous page
     def prev_page(self, current):
+        # Set the minimum page in 1
         if current <= 1:
             self.db_page = 1
         else:
             self.db_page = current - 1
 
         # Refresh the table
-        self.table_refresh(self)
+        self.refresh(self)
 
     # Pagination: next page
     def next_page(self, current, results):
-        self.db_page = current + 1
+        # Update the page if not the last one
+        if not self.db_page == results.last_page:
+            self.db_page = current + 1
 
-        # Refresh the table
-        if self.db_page <= results.last_page:
-            self.table_refresh(self)
+            # Refresh the table
+            self.refresh(self)
 
     # Reset table
-    def reset(self):
-        # Reset table
-        self.destroy()
-
+    def table_reset(self):
         Table(
             self.root,
+            self.max_width,
             config.database['per_page'],
             config.database['page'],
             config.database['order'],
             config.database['direction'],
-            {},
+            config.database['filter'],
         )
 
     # Refresh table
+    # Dont follow the advice from pycharm... this function cannot be static!!
     def refresh(self, table):
-        # Reset table
-        self.destroy()
-
         Table(
             table.root,
+            table.max_width,
             table.db_per_page,
             table.db_page,
             table.db_order,
