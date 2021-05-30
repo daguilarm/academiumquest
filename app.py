@@ -158,7 +158,7 @@ class Application(tkinter.Frame):
         # Button config
         b_config = {
             'fg': '#333333',
-            'font': ('Arial', 18),
+            'font': ('Verdana', 18),
             'width': 40,
             'padx': 20,
             'pady': 20,
