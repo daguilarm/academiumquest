@@ -59,7 +59,7 @@ class Application(tkinter.Frame):
     # Application GUI
     def __init(self):
         # Define the Application Title / Label
-        title_label = tkinter.Label(self.root, text=self.table_title, font=('Arial', 40), pady=30)
+        title_label = tkinter.Label(self.root, text=self.table_title, font=('Verdana', 40), pady=20)
         title_label.grid(row=0, column=0, columnspan=self.columns_total, sticky='w', padx=20)
 
         # Set column header style
@@ -148,7 +148,7 @@ class Application(tkinter.Frame):
     def table_pagination(self, results):
         # Pagination frame
         pagination = tkinter.Frame(self.root)
-        pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=40)
+        pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=20)
 
         # Pagination label
         label_title = 'Mostrando página {} de {} páginas, de un total de {} resultados'.format(results.current_page, results.last_page, results.total)
