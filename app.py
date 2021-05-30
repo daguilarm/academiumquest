@@ -166,12 +166,12 @@ class Application(tkinter.Frame):
 
         # Prev button
         button_prev = tkinter.Button(pagination, b_config, text='⇦ Anterior',
-                                     command=lambda: self.table_prev_page(self.db_page))
+                                     command=lambda: self.table_prev_page(self.db_page), foreground="#666666")
         button_prev.grid(row=12, column=0, padx=10)
 
         # Next button
         button_next = tkinter.Button(pagination, b_config, text='Siguiente ⇨',
-                                     command=lambda: self.table_next_page(self.db_page, results))
+                                     command=lambda: self.table_next_page(self.db_page, results), foreground="#666666")
         button_next.grid(row=12, column=1, padx=10)
 
     # Define the filters
