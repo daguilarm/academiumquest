@@ -3,7 +3,7 @@ import libs.orm as sql
 import tkinter
 from tkinter import ttk, W
 from libs.filters import Filters
-from libs import static
+from libs import static, crud
 
 
 # Create table
@@ -203,13 +203,13 @@ class Table:
         values = self.table.item(row).get('values')
 
         # Clean the values
-        filter_value = []
+        filter_values = []
 
         for i in values:
-            filter_value.append(str(i).replace('\n', ' ').replace(config.empty_results, ''))
+            filter_values.append(str(i).replace('\n', ' ').replace(config.empty_results, ''))
 
-        print(filter_value)
-
+        # Create the edit window
+        crud.edit(filter_values)
 
     # Refresh table
     def refresh(self, app):
