@@ -16,3 +16,6 @@ database = {
     'direction': 'ASC',
     'filter': {},
 }
+
+# Emtpy results
+empty_results = '┄'

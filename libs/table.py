@@ -196,20 +196,20 @@ class Table:
 
     # Edit row on double click
     def on_double_click(self, event):
-        # Get the row and the column clicked
-        row = self.table.identify_row(event.y)
-        column = self.table.identify_column(event.x)
+        # Get the row
+        row = self.table.focus()
 
-        # Get column position info
-        x, y, width, height = self.table.bbox(row, column)
+        # Get row information
+        values = self.table.item(row).get('values')
 
-        # y-axis offset
-        y_offset = 0
+        # Clean the values
+        filter_value = []
 
-        # place Entry popup properly
-        text = self.table.item(row, 'text')
-        self.popup = EntryPopup(self.table, row, text)
-        self.popup.place(x=0, y=y + y_offset, anchor=W, relwidth=1)
+        for i in values:
+            filter_value.append(str(i).replace('\n', ' ').replace(config.empty_results, ''))
+
+        print(filter_value)
+
 
     # Refresh table
     def refresh(self, app):

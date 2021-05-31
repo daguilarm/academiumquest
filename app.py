@@ -50,7 +50,7 @@ class Application(tkinter.Frame):
         self.style.configure('Treeview', rowheight=100, font=('Verdana', 12))
         self.style.configure('Treeview.Heading', padding=15, font=('Verdana', 14), relief='ridge')
 
-        # Set the combobox font
+        # Set the combobox font for all the application
         combobox_font = tkinter.font.Font(family="Verdana", size=28)
         self.root.option_add("*TCombobox*Listbox*Font", combobox_font)
 

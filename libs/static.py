@@ -2,6 +2,9 @@ from tkinter.font import Font
 
 
 # Resolve the table cell value base on the width
+import config
+
+
 def table_cell_value(columns_width, max_width, columns, row):
     # Default values
     result = []
@@ -18,7 +21,7 @@ def table_cell_value(columns_width, max_width, columns, row):
         # If column is a date
         if columns[index] == 'used':
             if value == '' or value == 'null' or value == 'None':
-                value = '---'
+                value = config.empty_results
             else:
                 value = format_date(value)
 
