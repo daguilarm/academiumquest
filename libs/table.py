@@ -1,11 +1,11 @@
 import config
 import libs.orm as sql
 import tkinter
-from tkinter import ttk, W
+from tkinter import ttk
 
 from libs.crud import Crud
 from libs.filters import Filters
-from libs import static, crud
+from libs import static
 
 
 # Create table
@@ -64,9 +64,6 @@ class Table:
 
         # Render pagination
         self.table_pagination(results)
-
-        # Edit popup
-        self.popup = ''
 
         # Filters
         self.filters = Filters(self)
@@ -210,8 +207,8 @@ class Table:
         for i in values:
             filter_values.append(str(i).replace('\n', ' ').replace(config.empty_results, ''))
 
-        # Create the edit window
-        Crud(filter_values).edit()
+        # Edit the row values
+        Crud(self.root, filter_values).edit()
 
     # Refresh table
     def refresh(self, app):
