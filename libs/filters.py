@@ -26,6 +26,11 @@ class Filters:
             state='readonly'
         )
         filter_by_type.grid(row=0, column=3, padx=5, pady=5)
+
+        # Default value
+        if 'type' in self.app.db_filter:
+            filter_by_type.set(self.app.db_filter.get('type'))
+
         # Bind the event to the select
         filter_by_type.bind('<<ComboboxSelected>>', self.filter_by_type_callback)
 
@@ -52,6 +57,11 @@ class Filters:
             state='readonly'
         )
         filter_by_category.grid(row=0, column=2, padx=5, pady=5, sticky='e')
+
+        # Default value
+        if 'category' in self.app.db_filter:
+            filter_by_category.set(self.app.db_filter.get('category'))
+
         # Bind the event to the select
         filter_by_category.bind('<<ComboboxSelected>>', self.filter_by_category_callback)
 

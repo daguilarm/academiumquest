@@ -68,8 +68,7 @@ class Table:
 
     # Render the table
     def render(self, results):
-        title = '{} - Con los filtros: {}'.format(self.title, ', '.join(self.db_filter.values()))
-        title_label = tkinter.Label(self.root, text=title, font=('Verdana', 30), pady=20)
+        title_label = tkinter.Label(self.root, text=self.title, font=('Verdana', 30), pady=20)
         title_label.grid(row=0, column=0, columnspan=self.columns_total, sticky='w', padx=20)
 
         # Set the table headers, columns and sort  the columns
@@ -204,12 +203,12 @@ class Table:
 
     # Reset table
     def reset(self, app):
-        self.table = Table(
-            app.root,
-            app.max_width,
-            config.database['per_page'],
-            config.database['page'],
-            config.database['order'],
-            config.database['direction'],
-            config.database['filter'],
-        )
+        # Reset the variables
+        self.db_per_page = config.database['per_page']
+        self.db_page = config.database['page']
+        self.db_order = config.database['order']
+        self.db_direction = config.database['direction']
+        self.db_filter.clear()
+
+        # Reset the table
+        self.refresh(self)
