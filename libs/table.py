@@ -2,6 +2,8 @@ import config
 import libs.orm as sql
 import tkinter
 from tkinter import ttk, W
+
+from libs.crud import Crud
 from libs.filters import Filters
 from libs import static, crud
 
@@ -209,7 +211,7 @@ class Table:
             filter_values.append(str(i).replace('\n', ' ').replace(config.empty_results, ''))
 
         # Create the edit window
-        crud.edit(filter_values)
+        Crud(filter_values).edit()
 
     # Refresh table
     def refresh(self, app):
