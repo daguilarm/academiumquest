@@ -17,7 +17,7 @@ def table_cell_value(columns_width, max_width, columns, row):
 
         # If column is a date
         if columns[index] == 'used':
-            if value == 'null':
+            if value == '' or value == 'null' or value == 'None':
                 value = '---'
             else:
                 value = format_date(value)
@@ -67,7 +67,10 @@ def table_cell_wrap(val, width, pad=80):
 
 # Format date from database format
 def format_date(value):
-    date, time = value.split(' ')
-    year, month, day = date.split('-')
+    if value:
+        date, time = value.split(' ')
+        year, month, day = date.split('-')
 
-    return '/'.join([day, month, year])
+        return '/'.join([day, month, year])
+
+    return value

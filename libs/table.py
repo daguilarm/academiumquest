@@ -1,7 +1,7 @@
 import config
 import libs.orm as sql
 import tkinter
-from tkinter import ttk
+from tkinter import ttk, W
 from libs.filters import Filters
 from libs import static
 
@@ -63,6 +63,9 @@ class Table:
         # Render pagination
         self.table_pagination(results)
 
+        # Edit popup
+        self.popup = ''
+
         # Filters
         self.filters = Filters(self)
 
@@ -98,6 +101,8 @@ class Table:
             )
 
             self.table.insert("", "end", values=list_of_values)
+
+            self.table.bind("<Double-1>", self.on_double_click)
 
         # Set the table grid
         self.table.grid(row=1, column=0, columnspan=self.columns_total)
@@ -188,6 +193,23 @@ class Table:
 
             # Refresh the table
             self.refresh(self)
+
+    # Edit row on double click
+    def on_double_click(self, event):
+        # Get the row and the column clicked
+        row = self.table.identify_row(event.y)
+        column = self.table.identify_column(event.x)
+
+        # Get column position info
+        x, y, width, height = self.table.bbox(row, column)
+
+        # y-axis offset
+        y_offset = 0
+
+        # place Entry popup properly
+        text = self.table.item(row, 'text')
+        self.popup = EntryPopup(self.table, row, text)
+        self.popup.place(x=0, y=y + y_offset, anchor=W, relwidth=1)
 
     # Refresh table
     def refresh(self, app):

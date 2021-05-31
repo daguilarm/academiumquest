@@ -1,5 +1,5 @@
-import config
 import libs.orm as sql
+import tkinter
 from tkinter import ttk
 
 
@@ -7,14 +7,37 @@ class Filters:
     def __init__(self, app):
         self.app = app
 
+        # Set default value if there is a selected value for the Checkbutton
+        if 'used' in self.app.db_filter:
+            self.used_status = tkinter.IntVar(value=1)
+        else:
+            self.used_status = tkinter.IntVar(value=0)
+
         # Render the filters
-        self.filter_by_type = self.filter_by_type()
-        self.filter_by_category = self.filter_by_category()
-        self.filter_by_used = self.filter_by_used()
+        self.filter_by_type()
+        self.filter_by_category()
+        self.filter_by_used()
 
     def filter_by_used(self):
-        filter_used = ttk.Checkbutton(self.app.root, text='Preguntas sin usar')
-        filter_used.grid(row=0, column=1, padx=5, pady=5, sticky='e')
+        # Filter by used
+        filter_by_used = ttk.Checkbutton(
+            self.app.root,
+            text='Preguntas sin usar',
+            var=self.used_status,
+            command=self.filter_by_used_callback
+        )
+        filter_by_used.grid(row=0, column=1, padx=5, pady=5, sticky='e')
+
+    # Filter by used
+    def filter_by_used_callback(self):
+        # Toggle status
+        if self.used_status.get():
+            self.app.db_filter['used'] = 'used_at_null'
+        else:
+            self.app.db_filter.pop('used', None)
+
+        # Update table
+        self.app.refresh(self.app)
 
     # Filter by type
     def filter_by_type(self):
@@ -27,7 +50,7 @@ class Filters:
         )
         filter_by_type.grid(row=0, column=3, padx=5, pady=5)
 
-        # Default value
+        # Set default value if there is a selected value
         if 'type' in self.app.db_filter:
             filter_by_type.set(self.app.db_filter.get('type'))
 
@@ -58,7 +81,7 @@ class Filters:
         )
         filter_by_category.grid(row=0, column=2, padx=5, pady=5, sticky='e')
 
-        # Default value
+        # Set default value if there is a selected value
         if 'category' in self.app.db_filter:
             filter_by_category.set(self.app.db_filter.get('category'))
 

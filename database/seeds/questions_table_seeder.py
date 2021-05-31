@@ -40,7 +40,7 @@ def random_number(start, end):
 
 
 def random_date():
-    foo = ('null', fake.date_this_month().strftime("%Y-%m-%d %H:%M:%S"))
+    foo = ('', fake.date_this_month().strftime("%Y-%m-%d %H:%M:%S"))
     return random.choice(foo)
 
 

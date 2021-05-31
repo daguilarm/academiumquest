@@ -44,7 +44,14 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
     if db_filter:
         for key, value in db_filter.items():
             if key and value:
-                query = query.\
-                    where(key, '=', value)
+                # Used filter
+                if key == 'used' and value == 'used_at_null':
+                    query = query. \
+                        where('questions.used_at', '=', '')
+                # Rest of the filters
+                else:
+                    query = query.\
+                        where(key, '=', value)
 
+    print(query.to_sql())
     return query.paginate(db_total_pages, db_page)
