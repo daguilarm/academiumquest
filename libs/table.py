@@ -208,7 +208,7 @@ class Table:
             filter_values.append(str(i).replace('\n', ' ').replace(config.empty_results, '').strip())
 
         # Edit the row values
-        Crud(self.root, filter_values).edit()
+        Crud(self, filter_values).edit()
 
     # Refresh table
     def refresh(self, app):

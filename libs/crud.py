@@ -6,8 +6,9 @@ from tkinter.ttk import Style
 
 # CRUD
 class Crud:
-	def __init__(self, root, values):
-		self.root = root
+	def __init__(self, table, values):
+		self.table = table
+		self.root = self.table.root
 		self.values = values
 
 		# Crud action
@@ -43,13 +44,14 @@ class Crud:
 		self.row = 0
 
 		# Fields
+		self.id = int(self.values[0])
 		self.category = tkinter.StringVar()
 		self.question = tkinter.StringVar()
 		self.answer_1 = tkinter.StringVar()
 		self.answer_2 = tkinter.StringVar()
 		self.answer_3 = tkinter.StringVar()
 		self.answer_4 = tkinter.StringVar()
-		self.correct = tkinter.StringVar()
+		self.correct = tkinter.IntVar()
 		self.type = tkinter.StringVar()
 
 	# Edit values
@@ -130,7 +132,7 @@ class Crud:
 					# Now we have the category name
 					field.set('{} - {}'.format(category.get('name'), category.get('id')))
 
-		return field.get()
+		return field
 
 	# Field question
 	def field_question(self):
@@ -151,7 +153,7 @@ class Crud:
 		# Item bind from the database
 		field.insert(INSERT, self.values[3])
 
-		return field.get()
+		return field
 
 	# Field answer
 	def field_answer(self, number):
@@ -172,7 +174,7 @@ class Crud:
 		# Item bind from the database
 		field.insert(INSERT, self.values[3 + number])
 
-		return field.get()
+		return field
 
 	# Correct answer
 	def field_correct(self):
@@ -199,7 +201,7 @@ class Crud:
 		# Item bind from the database
 		field.set(self.values[8])
 
-		return field.get()
+		return field
 
 	# Correct answer
 	def field_type(self):
@@ -226,7 +228,7 @@ class Crud:
 		# Item bind from the database
 		field.set(self.values[9])
 
-		return field.get()
+		return field
 
 	# Action buttons
 	def field_buttons(self):
@@ -254,7 +256,42 @@ class Crud:
 
 	# Update values
 	def crud_update(self):
-		print(self.type)
+		# Get the values
+		field_id = self.id
+		field_category = int(self.get_category_id())
+		field_question = self.question.get('1.0', 'end').strip()
+		field_answer_1 = self.answer_1.get('1.0', 'end').strip()
+		field_answer_2 = self.answer_2.get('1.0', 'end').strip()
+		field_answer_3 = self.answer_3.get('1.0', 'end').strip()
+		field_answer_4 = self.answer_4.get('1.0', 'end').strip()
+		field_correct = int(self.correct.get().strip())
+		field_type = self.type.get().strip()
+
+		update = sql.db.\
+			table('questions').\
+			where('id', field_id).\
+			update(
+			{
+				'category_id': field_category,
+				'question': field_question,
+				'answer_1': field_answer_1,
+				'answer_2': field_answer_2,
+				'answer_3': field_answer_3,
+				'answer_4': field_answer_4,
+				'correct': field_correct,
+				'type': field_type,
+			}
+		)
+
+		if update:
+			self.table.refresh(self.table)
+			self.crud.destroy()
+
+	# Get the category ID
+	def get_category_id(self):
+		category = self.category.get().strip().split(' - ')
+
+		return category[1].strip()
 
 	# Determine the window position
 	def crud_position(self):
