@@ -77,12 +77,7 @@ class Crud:
 		self.answer(4)
 
 		# Correct answer
-		# answer_option = tkinter.IntVar()
-		# tkinter.Radiobutton(self.crud, text="Respuesta 1", variable=answer_option, value=1).grid(row=11, column=0)
-		# tkinter.Radiobutton(self.crud, text="Respuesta 2", variable=answer_option, value=2).grid(row=11, column=1)
-		# tkinter.Radiobutton(self.crud, text="Respuesta 3", variable=answer_option, value=3).grid(row=11, column=2)
-		# tkinter.Radiobutton(self.crud, text="Respuesta 4", variable=answer_option, value=4).grid(row=11, column=3)
-
+		self.correct()
 
 		# Action buttons
 		self.field_buttons()
@@ -159,6 +154,30 @@ class Crud:
 
 		# Item bind from the database
 		field.insert(INSERT, self.values[3 + number])
+
+	def correct(self):
+		# Update row
+		self.row += 1
+
+		# Label
+		tkinter.Label(
+			self.crud,
+			text="Respuesta correcta",
+			font=self.font,
+		).grid(self.field, row=self.row, column=0)
+
+		# Field
+		field = ttk.Combobox(
+			self.crud,
+			values=list(range(1, 5)),
+			font=self.font,
+			state='readonly',
+			width=50,
+		)
+		field.grid(self.field, row=self.row, column=1, columnspan=3)
+
+		# Item bind from the database
+		field.set(self.values[8])
 
 	# Action buttons
 	def field_buttons(self):
