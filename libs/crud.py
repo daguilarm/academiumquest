@@ -26,9 +26,12 @@ class Crud:
 		self.font = tkinter.font.Font(family="Verdana", size=14)
 		self.font_title = tkinter.font.Font(family="Verdana", size=28)
 
-		# Define the fields width
-		self.width_label = 20
-		self.width_field = 50
+		# Field config
+		self.field = {
+			'padx': 10,
+			'pady': 10,
+			'sticky': 'we',
+		}
 
 		# Define the styles
 		self.crud_style()
@@ -49,19 +52,11 @@ class Crud:
 			pady=20,
 		).grid(row=0, column=0, columnspan=4)
 
-		# Select subject / category
+		# Category field
 		self.field_category()
 
-		# Label
-		tkinter.Label(
-			self.crud,
-			text="Pregunta",
-			font=self.font,
-			width=self.width_label,
-		).grid(row=2, column=0, padx=5, pady=5)
-		field = tkinter.Text(self.crud, width=self.width_field, height=10, font=self.font)
-		field.grid(row=2, column=1, columnspan=3, padx=5, pady=5)
-		field.insert(INSERT, self.values[3])
+		# Question field
+		self.question()
 
 		# Action buttons
 		self.field_buttons()
@@ -76,10 +71,9 @@ class Crud:
 			self.crud,
 			text="Asignatura",
 			font=self.font,
-			width=self.width_label,
-		).grid(row=1, column=0, padx=5, pady=5)
+		).grid(self.field, row=1, column=0)
 
-		# Options
+		# Field
 		field = ttk.Combobox(
 			self.crud,
 			values=list_of_categories,
@@ -87,11 +81,27 @@ class Crud:
 			state='readonly',
 			width=50,
 		)
-		field.grid(row=1, column=1, columnspan=3, padx=5, pady=5)
+		field.grid(self.field, row=1, column=1, columnspan=3)
 
 		# Item bind from the database
 		if self.action == 'edit':
 			field.set(self.values[2])
+
+	# Field question
+	def question(self):
+		# Label
+		tkinter.Label(
+			self.crud,
+			text="Pregunta",
+			font=self.font,
+		).grid(self.field, row=2, column=0)
+
+		# Field
+		field = tkinter.Text(self.crud, height=10, font=self.font)
+		field.grid(self.field, row=2, column=1, columnspan=3)
+
+		# Item bind from the database
+		field.insert(INSERT, self.values[3])
 
 	# Action buttons
 	def field_buttons(self):
@@ -100,8 +110,8 @@ class Crud:
 			self.crud,
 			text='Cancelar',
 			command=self.crud.destroy,
-			style='Delete.TButton'
-		).grid(row=12, column=1, padx=10, pady=10, sticky="e")
+			style='Delete.TButton',
+		).grid(row=12, column=1, padx=10, pady=10, sticky='we')
 
 		# Action button
 		# Define action base on self.action...
@@ -109,8 +119,8 @@ class Crud:
 			self.crud,
 			text='Editar',
 			command=self.crud.destroy,
-			style='Regular.TButton'
-		).grid(row=12, column=2, padx=10, pady=10, sticky="w")
+			style='Regular.TButton',
+		).grid(row=12, column=2, padx=10, pady=10, sticky='we')
 
 	# Determine the window position
 	def crud_position(self):
