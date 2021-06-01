@@ -54,6 +54,23 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
     # print(query.to_sql())
     return query.paginate(db_total_pages, db_page)
 
+# Update questions
+def questions_update(fields):
+    return db.\
+        table('questions').\
+        where('id', fields.get('id')).\
+        update(
+        {
+            'category_id': fields.get('category'),
+            'question': fields.get('question'),
+            'answer_1': fields.get('answer_1'),
+            'answer_2': fields.get('answer_2'),
+            'answer_3': fields.get('answer_3'),
+            'answer_4': fields.get('answer_4'),
+            'correct': fields.get('correct'),
+            'type': fields.get('type'),
+        }
+    )
 
 # Get all the categories
 def categories():

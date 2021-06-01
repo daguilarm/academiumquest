@@ -1,8 +1,7 @@
 import libs.orm as sql
 import tkinter
-from tkinter import ttk, INSERT
+from tkinter import ttk, INSERT, messagebox
 from tkinter.ttk import Style
-
 
 # CRUD
 class Crud:
@@ -249,49 +248,61 @@ class Crud:
 		button_update = ttk.Button(
 			self.crud,
 			text='Editar',
-			command=lambda: self.crud_update(),
+			command=lambda: self.crud_execute(action='edit'),
 			style='Regular.TButton',
 		)
 		button_update.grid(row=self.row, column=2, padx=10, pady=10, sticky='we')
 
-	# Update values
-	def crud_update(self):
-		# Get the values
-		field_id = self.id
-		field_category = int(self.get_category_id())
-		field_question = self.question.get('1.0', 'end').strip()
-		field_answer_1 = self.answer_1.get('1.0', 'end').strip()
-		field_answer_2 = self.answer_2.get('1.0', 'end').strip()
-		field_answer_3 = self.answer_3.get('1.0', 'end').strip()
-		field_answer_4 = self.answer_4.get('1.0', 'end').strip()
-		field_correct = int(self.correct.get().strip())
-		field_type = self.type.get().strip()
+	# Update or Create values
+	def crud_execute(self, action):
+		fields = {
+			'id': self.id,
+			'category': int(self.get_category_id()),
+			'question': self.question.get('1.0', 'end').strip(),
+			'answer_1': self.answer_1.get('1.0', 'end').strip(),
+			'answer_2': self.answer_2.get('1.0', 'end').strip(),
+			'answer_3': self.answer_3.get('1.0', 'end').strip(),
+			'answer_4': self.answer_4.get('1.0', 'end').strip(),
+			'correct': int(self.correct.get().strip()),
+			'type': self.type.get().strip(),
+		}
 
-		update = sql.db.\
-			table('questions').\
-			where('id', field_id).\
-			update(
-			{
-				'category_id': field_category,
-				'question': field_question,
-				'answer_1': field_answer_1,
-				'answer_2': field_answer_2,
-				'answer_3': field_answer_3,
-				'answer_4': field_answer_4,
-				'correct': field_correct,
-				'type': field_type,
-			}
-		)
+		# Edit action
+		if action == 'edit':
+			operation = sql.questions_update(fields)
+		# Create action
+		else:
+			pass
 
-		if update:
-			self.table.refresh(self.table)
-			self.crud.destroy()
+		# Close the window and update the application
+		self.table.refresh(self.table)
+		self.crud.destroy()
+
+		# Show success or fail messages
+		self.crud_execute_message(operation)
 
 	# Get the category ID
 	def get_category_id(self):
 		category = self.category.get().strip().split(' - ')
 
 		return category[1].strip()
+
+	# Success or fail messages
+	def crud_execute_message(self, operation):
+		# Success
+		if operation:
+			tkinter.messagebox.showinfo(
+				title='Recurso actualizado',
+				message='Se ha realizado con éxito la operación de edición del recurso.'
+			)
+
+		# Fail
+		else:
+			tkinter.messagebox.showerror(
+				title='Error al actuailizar recurso',
+				message='Ha ocurrido un error al actualizar el recurso.\n' +
+						'Si el error persiste, por favor, contacte con el administrador del sistema.'
+			)
 
 	# Determine the window position
 	def crud_position(self):
