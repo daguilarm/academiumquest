@@ -79,6 +79,9 @@ class Crud:
 		# Correct answer
 		self.correct()
 
+		# Question type
+		self.type()
+
 		# Action buttons
 		self.field_buttons()
 
@@ -155,6 +158,7 @@ class Crud:
 		# Item bind from the database
 		field.insert(INSERT, self.values[3 + number])
 
+	# Correct answer
 	def correct(self):
 		# Update row
 		self.row += 1
@@ -178,6 +182,31 @@ class Crud:
 
 		# Item bind from the database
 		field.set(self.values[8])
+
+	# Correct answer
+	def type(self):
+		# Update row
+		self.row += 1
+
+		# Label
+		tkinter.Label(
+			self.crud,
+			text="Tipo",
+			font=self.font,
+		).grid(self.field, row=self.row, column=0)
+
+		# Field
+		field = ttk.Combobox(
+			self.crud,
+			values=list(range(1, 5)),
+			font=self.font,
+			state='readonly',
+			width=50,
+		)
+		field.grid(self.field, row=self.row, column=1, columnspan=3)
+
+		# Item bind from the database
+		field.set(self.values[9])
 
 	# Action buttons
 	def field_buttons(self):

@@ -1,5 +1,4 @@
 # Created by @daguilarm at 24/5/21
-import orator
 from orator import DatabaseManager
 
 databases = {
@@ -44,15 +43,14 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
                     query = query.\
                         where('questions.used_at', '=', '')
                 # Used filter
-                if key == 'category':
+                elif key == 'category':
                     query = query.\
                         where('questions.category_id', '=', value)
                 # Rest of the filters
                 else:
                     query = query.\
                         where(key, '=', value)
-
-    # print(query.to_sql())
+    print(query.to_sql())
     return query.paginate(db_total_pages, db_page)
 
 
