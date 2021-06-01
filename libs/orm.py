@@ -50,7 +50,8 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
                 else:
                     query = query.\
                         where(key, '=', value)
-    print(query.to_sql())
+    # Debug
+    # print(query.to_sql())
     return query.paginate(db_total_pages, db_page)
 
 
