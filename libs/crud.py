@@ -14,7 +14,7 @@ class Crud:
 		self.action = ''
 
 		# Reset all the open windows
-		self.reset()
+		self.crud_reset_windows()
 
 		# Define container
 		self.crud = tkinter.Toplevel(self.root)
@@ -42,6 +42,16 @@ class Crud:
 		# Current row
 		self.row = 0
 
+		# Fields
+		self.category = tkinter.StringVar()
+		self.question = tkinter.StringVar()
+		self.answer_1 = tkinter.StringVar()
+		self.answer_2 = tkinter.StringVar()
+		self.answer_3 = tkinter.StringVar()
+		self.answer_4 = tkinter.StringVar()
+		self.correct = tkinter.StringVar()
+		self.type = tkinter.StringVar()
+
 	# Edit values
 	def edit(self):
 		self.action = 'edit'
@@ -59,28 +69,28 @@ class Crud:
 		).grid(row=self.row, column=0, columnspan=4)
 
 		# Category field
-		self.field_category()
+		self.category = self.field_category()
 
 		# Question field
-		self.question()
+		self.question = self.field_question()
 
 		# Answer 1
-		self.answer(1)
+		self.answer_1 = self.field_answer(1)
 
 		# Answer 2
-		self.answer(2)
+		self.answer_2 = self.field_answer(2)
 
 		# Answer 3
-		self.answer(3)
+		self.answer_3 = self.field_answer(3)
 
 		# Answer 4
-		self.answer(4)
+		self.answer_4 = self.field_answer(4)
 
 		# Correct answer
-		self.correct()
+		self.correct = self.field_correct()
 
 		# Question type
-		self.type()
+		self.type = self.field_type()
 
 		# Action buttons
 		self.field_buttons()
@@ -120,8 +130,10 @@ class Crud:
 					# Now we have the category name
 					field.set('{} - {}'.format(category.get('name'), category.get('id')))
 
+		return field.get()
+
 	# Field question
-	def question(self):
+	def field_question(self):
 		# Update row
 		self.row += 1
 
@@ -139,8 +151,10 @@ class Crud:
 		# Item bind from the database
 		field.insert(INSERT, self.values[3])
 
+		return field.get()
+
 	# Field answer
-	def answer(self, number):
+	def field_answer(self, number):
 		# Update row
 		self.row += 1
 
@@ -158,8 +172,10 @@ class Crud:
 		# Item bind from the database
 		field.insert(INSERT, self.values[3 + number])
 
+		return field.get()
+
 	# Correct answer
-	def correct(self):
+	def field_correct(self):
 		# Update row
 		self.row += 1
 
@@ -183,8 +199,10 @@ class Crud:
 		# Item bind from the database
 		field.set(self.values[8])
 
+		return field.get()
+
 	# Correct answer
-	def type(self):
+	def field_type(self):
 		# Update row
 		self.row += 1
 
@@ -198,7 +216,7 @@ class Crud:
 		# Field
 		field = ttk.Combobox(
 			self.crud,
-			values=list(range(1, 5)),
+			values=['eir', 'ope'],
 			font=self.font,
 			state='readonly',
 			width=50,
@@ -208,27 +226,35 @@ class Crud:
 		# Item bind from the database
 		field.set(self.values[9])
 
+		return field.get()
+
 	# Action buttons
 	def field_buttons(self):
 		# Update row
 		self.row += 1
 
 		# Exit/Cancel button
-		ttk.Button(
+		button_exit = ttk.Button(
 			self.crud,
 			text='Cancelar',
 			command=self.crud.destroy,
 			style='Delete.TButton',
-		).grid(row=self.row, column=1, padx=10, pady=10, sticky='we')
+		)
+		button_exit.grid(row=self.row, column=1, padx=10, pady=10, sticky='we')
 
 		# Action button
 		# Define action base on self.action...
-		ttk.Button(
+		button_update = ttk.Button(
 			self.crud,
 			text='Editar',
-			command=self.crud.destroy,
+			command=lambda: self.crud_update(),
 			style='Regular.TButton',
-		).grid(row=self.row, column=2, padx=10, pady=10, sticky='we')
+		)
+		button_update.grid(row=self.row, column=2, padx=10, pady=10, sticky='we')
+
+	# Update values
+	def crud_update(self):
+		print(self.type)
 
 	# Determine the window position
 	def crud_position(self):
@@ -255,7 +281,7 @@ class Crud:
 		)
 
 	# Destroy all open windows
-	def reset(self):
+	def crud_reset_windows(self):
 		# Get all the items
 		for items in self.root.winfo_children():
 			# If it is not the root...
