@@ -205,7 +205,7 @@ class Table:
         filter_values = []
 
         for i in values:
-            filter_values.append(str(i).replace('\n', ' ').replace(config.empty_results, ''))
+            filter_values.append(str(i).replace('\n', ' ').replace(config.empty_results, '').strip())
 
         # Edit the row values
         Crud(self.root, filter_values).edit()

@@ -36,6 +36,9 @@ class Crud:
 		# Define the styles
 		self.crud_style()
 
+		# Categories
+		self.categories = list(sql.categories())
+
 	# Edit values
 	def edit(self):
 		self.action = 'edit'
@@ -76,7 +79,9 @@ class Crud:
 	# Field category
 	def field_category(self):
 		# Get all the categories from the database
-		list_of_categories = list(sql.categories().flatten().unique().prepend(''))
+		categories = {}
+		for category in self.categories:
+			categories['{} - {}'.format(category.get('name'), category.get('id'))] = category.get('id')
 
 		# Label
 		tkinter.Label(
@@ -88,7 +93,7 @@ class Crud:
 		# Field
 		field = ttk.Combobox(
 			self.crud,
-			values=list_of_categories,
+			values=list(categories.keys()),
 			font=self.font,
 			state='readonly',
 			width=50,
@@ -97,7 +102,11 @@ class Crud:
 
 		# Item bind from the database
 		if self.action == 'edit':
-			field.set(self.values[2])
+			# We have to search the id in the filters
+			for category in self.categories:
+				if category.get('name') == self.values[2]:
+					# Now we have the category name
+					field.set('{} - {}'.format(category.get('name'), category.get('id')))
 
 	# Field question
 	def question(self):
