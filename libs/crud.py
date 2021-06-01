@@ -39,6 +39,9 @@ class Crud:
 		# Categories
 		self.categories = list(sql.categories())
 
+		# Current row
+		self.row = 0
+
 	# Edit values
 	def edit(self):
 		self.action = 'edit'
@@ -53,7 +56,7 @@ class Crud:
 			font=self.font_title,
 			padx=20,
 			pady=20,
-		).grid(row=0, column=0, columnspan=4)
+		).grid(row=self.row, column=0, columnspan=4)
 
 		# Category field
 		self.field_category()
@@ -73,11 +76,22 @@ class Crud:
 		# Answer 4
 		self.answer(4)
 
+		# Correct answer
+		# answer_option = tkinter.IntVar()
+		# tkinter.Radiobutton(self.crud, text="Respuesta 1", variable=answer_option, value=1).grid(row=11, column=0)
+		# tkinter.Radiobutton(self.crud, text="Respuesta 2", variable=answer_option, value=2).grid(row=11, column=1)
+		# tkinter.Radiobutton(self.crud, text="Respuesta 3", variable=answer_option, value=3).grid(row=11, column=2)
+		# tkinter.Radiobutton(self.crud, text="Respuesta 4", variable=answer_option, value=4).grid(row=11, column=3)
+
+
 		# Action buttons
 		self.field_buttons()
 
 	# Field category
 	def field_category(self):
+		# Update row
+		self.row += 1
+
 		# Get all the categories from the database
 		categories = {}
 		for category in self.categories:
@@ -88,7 +102,7 @@ class Crud:
 			self.crud,
 			text="Asignatura",
 			font=self.font,
-		).grid(self.field, row=1, column=0)
+		).grid(self.field, row=self.row, column=0)
 
 		# Field
 		field = ttk.Combobox(
@@ -98,7 +112,7 @@ class Crud:
 			state='readonly',
 			width=50,
 		)
-		field.grid(self.field, row=1, column=1, columnspan=3)
+		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
 		# Item bind from the database
 		if self.action == 'edit':
@@ -110,45 +124,54 @@ class Crud:
 
 	# Field question
 	def question(self):
+		# Update row
+		self.row += 1
+
 		# Label
 		tkinter.Label(
 			self.crud,
 			text="Pregunta",
 			font=self.font,
-		).grid(self.field, row=2, column=0)
+		).grid(self.field, row=self.row, column=0)
 
 		# Field
 		field = tkinter.Text(self.crud, height=10, font=self.font)
-		field.grid(self.field, row=2, column=1, columnspan=3)
+		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
 		# Item bind from the database
 		field.insert(INSERT, self.values[3])
 
 	# Field answer
 	def answer(self, number):
+		# Update row
+		self.row += 1
+
 		# Label
 		tkinter.Label(
 			self.crud,
 			text='Respuesta {}'.format(number),
 			font=self.font,
-		).grid(self.field, row=int(2 + number), column=0)
+		).grid(self.field, row=self.row, column=0)
 
 		# Field
 		field = tkinter.Text(self.crud, height=5, font=self.font)
-		field.grid(self.field, row=int(2 + number), column=1, columnspan=2)
+		field.grid(self.field, row=self.row, column=1, columnspan=2)
 
 		# Item bind from the database
 		field.insert(INSERT, self.values[3 + number])
 
 	# Action buttons
 	def field_buttons(self):
+		# Update row
+		self.row += 1
+
 		# Exit/Cancel button
 		ttk.Button(
 			self.crud,
 			text='Cancelar',
 			command=self.crud.destroy,
 			style='Delete.TButton',
-		).grid(row=12, column=1, padx=10, pady=10, sticky='we')
+		).grid(row=self.row, column=1, padx=10, pady=10, sticky='we')
 
 		# Action button
 		# Define action base on self.action...
@@ -157,7 +180,7 @@ class Crud:
 			text='Editar',
 			command=self.crud.destroy,
 			style='Regular.TButton',
-		).grid(row=12, column=2, padx=10, pady=10, sticky='we')
+		).grid(row=self.row, column=2, padx=10, pady=10, sticky='we')
 
 	# Determine the window position
 	def crud_position(self):
