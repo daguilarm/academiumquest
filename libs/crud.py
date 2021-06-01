@@ -58,6 +58,18 @@ class Crud:
 		# Question field
 		self.question()
 
+		# Answer 1
+		self.answer(1)
+
+		# Answer 2
+		self.answer(2)
+
+		# Answer 3
+		self.answer(3)
+
+		# Answer 4
+		self.answer(4)
+
 		# Action buttons
 		self.field_buttons()
 
@@ -102,6 +114,22 @@ class Crud:
 
 		# Item bind from the database
 		field.insert(INSERT, self.values[3])
+
+	# Field answer
+	def answer(self, number):
+		# Label
+		tkinter.Label(
+			self.crud,
+			text='Respuesta {}'.format(number),
+			font=self.font,
+		).grid(self.field, row=int(2 + number), column=0)
+
+		# Field
+		field = tkinter.Text(self.crud, height=5, font=self.font)
+		field.grid(self.field, row=int(2 + number), column=1, columnspan=2)
+
+		# Item bind from the database
+		field.insert(INSERT, self.values[3 + number])
 
 	# Action buttons
 	def field_buttons(self):
