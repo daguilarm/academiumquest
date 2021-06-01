@@ -76,7 +76,7 @@ class Filters:
         # Get all the categories from the database
         categories = {}
         for category in list(self.categories):
-            categories['{} - {}'.format(category.get('id'), category.get('name'))] = category.get('id')
+            categories['{} - {}'.format(category.get('name'), category.get('id'))] = category.get('id')
 
         # Create the select
         filter_by_category = ttk.Combobox(
@@ -105,7 +105,7 @@ class Filters:
 
         # Get the current id
         for category in self.categories:
-            if category.get('name') == value[1]:
+            if category.get('name') == value[0]:
                 current_id = category.get('id')
 
         # Get values
