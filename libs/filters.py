@@ -13,6 +13,9 @@ class Filters:
         else:
             self.used_status = tkinter.IntVar(value=0)
 
+        # Categories
+        self.categories = sql.categories()
+
         # Render the filters
         self.filter_by_type()
         self.filter_by_category()
@@ -71,11 +74,14 @@ class Filters:
     # Filter by category
     def filter_by_category(self):
         # Get all the categories from the database
-        filter_by_category_values = list(sql.categories().flatten().unique().prepend(''))
+        categories = {}
+        for category in list(self.categories):
+            categories['{} - {}'.format(category.get('id'), category.get('name'))] = category.get('id')
+
         # Create the select
         filter_by_category = ttk.Combobox(
             self.app.root,
-            values=filter_by_category_values,
+            values=list(categories.keys()),
             font=('Verdana', 18),
             state='readonly'
         )
@@ -83,7 +89,11 @@ class Filters:
 
         # Set default value if there is a selected value
         if 'category' in self.app.db_filter:
-            filter_by_category.set(self.app.db_filter.get('category'))
+            # We have to search the id in the filters
+            for category in self.categories:
+                if category.get('id') == self.app.db_filter.get('category'):
+                    # Now we have the category name
+                    filter_by_category.set(category.get('name'))
 
         # Bind the event to the select
         filter_by_category.bind('<<ComboboxSelected>>', self.filter_by_category_callback)
@@ -91,10 +101,15 @@ class Filters:
     # Filter by type
     def filter_by_category_callback(self, event):
         # Get event
-        value = event.widget.get()
+        value = event.widget.get().split(' - ')
+
+        # Get the current id
+        for category in self.categories:
+            if category.get('name') == value[1]:
+                current_id = category.get('id')
 
         # Get values
         if value:
-            self.app.db_filter.update(category=value)
+            self.app.db_filter.update(category=current_id)
             self.app.db_page = 1
             self.app.refresh(self.app)

@@ -13,11 +13,6 @@ databases = {
 db = DatabaseManager(databases)
 
 
-# Get the table categories
-def categories():
-    return db.table('categories').select('name').get()
-
-
 # Get the table results
 def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
 
@@ -46,8 +41,12 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
             if key and value:
                 # Used filter
                 if key == 'used' and value == 'used_at_null':
-                    query = query. \
+                    query = query.\
                         where('questions.used_at', '=', '')
+                # Used filter
+                if key == 'category':
+                    query = query.\
+                        where('questions.category_id', '=', value)
                 # Rest of the filters
                 else:
                     query = query.\
@@ -55,3 +54,12 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
 
     # print(query.to_sql())
     return query.paginate(db_total_pages, db_page)
+
+
+# Get all the categories
+def categories():
+    return db.\
+        table('categories').\
+        select('id', 'name').\
+        order_by('name').\
+        get()
