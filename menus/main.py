@@ -18,6 +18,9 @@ class MenuBar(tk.Menu):
         # Parent
         self.parent = parent
 
+        # Init the Table class for operations
+        self.table = self.create_table()
+
         # File
         self.file()
 
@@ -63,23 +66,11 @@ class MenuBar(tk.Menu):
 
     # Create row
     def question_create(self):
-        table = self.create_table()
-        table.table_row_create()
-
+        self.table.table_row_create()
 
     # Edit row
     def question_edit(self):
-        print('editando pregunta')
-
-        # Table(
-        #     self.parent.root,
-        #     self.parent.max_width,
-        #     config.database['per_page'],
-        #     config.database['page'],
-        #     config.database['order'],
-        #     config.database['direction'],
-        #     config.database['filter'],
-        # )
+        self.table
 
     # Quit program
     def quit(self):

@@ -77,7 +77,9 @@ def column_width(max_width, percent):
 # Format date from database format
 def format_date(value):
     if value:
+        # Separate the string to values
         date, time = value.split(' ')
+        # Separate the string to values
         year, month, day = date.split('-')
 
         return '/'.join([day, month, year])

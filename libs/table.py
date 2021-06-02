@@ -216,12 +216,15 @@ class Table:
         # Refresh the table
         self.refresh(self)
 
+    """
+        Create and edit table rows
+    """
+
     # Edit row on double click
     # This method will be fired from table_render()
     def table_row_create(self):
         # Edit the row values
         Crud(self, []).render(action='create')
-
 
     # Edit row on double click
     # This method will be fired from table_render()
