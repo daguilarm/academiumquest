@@ -10,13 +10,14 @@ class Crud:
 		All the CRUD actions and methods described here are for libs/table.py
 	"""
 
-	def __init__(self, table, values = ''):
+	def __init__(self, table, values={}):
 		self.table = table
 		self.root = self.table.root
 		self.values = values
 
 		# Crud action
-		self.action = ''
+		self.action = tkinter.StringVar()
+		self.action_text = tkinter.StringVar()
 
 		# Destroy all the open windows
 		self.destroy_windows()
@@ -49,7 +50,7 @@ class Crud:
 		self.row = 0
 
 		# Fields
-		self.id = int(self.values[0])
+		self.id = int(self.values[0]) if self.values else 0
 		self.category = tkinter.StringVar()
 		self.question = tkinter.StringVar()
 		self.answer_1 = tkinter.StringVar()
@@ -60,21 +61,25 @@ class Crud:
 		self.type = tkinter.StringVar()
 
 	# Create or Edit values
-	def render(self, action='edit'):
+	def render(self, action):
 		"""
 			CRUD action edit:
 				- All the methods and parameters necessaries for update are here.
 				- All the fields has been packed in methods in order to be reused in other actions
 		"""
+		# Define the action
 		self.action = action
 
+		# Get the options base on the action
+		self.action_text = 'Editar' if self.action == 'edit' else 'Crear'
+
 		# Set the title
-		self.crud.wm_title("Editar pregunta")
+		self.crud.wm_title('{} pregunta'.format(self.action_text))
 
 		# Label for edit
 		tkinter.Label(
 			self.crud,
-			text="Editar pregunta",
+			text='{} pregunta'.format(self.action_text),
 			font=self.font_title,
 			padx=20,
 			pady=20,
@@ -271,19 +276,11 @@ class Crud:
 		)
 		button_exit.grid(row=self.row, column=1, padx=10, pady=10, sticky='we')
 
-		# Define action base on self.action...
-		if self.action == 'edit':
-			action_text = 'Editar'
-			action_exec = 'edit'
-		else:
-			action_text = 'Crear'
-			action_exec = 'create'
-
 		# Action button
 		button_action = ttk.Button(
 			self.crud,
-			text=action_text,
-			command=lambda: self.crud_execute(action=action_exec),
+			text=self.action_text,
+			command=lambda: self.crud_execute(action=self.action),
 			style='Regular.TButton',
 		)
 		button_action.grid(row=self.row, column=2, padx=10, pady=10, sticky='we')
@@ -326,6 +323,7 @@ class Crud:
 
 	# Get the category ID
 	def get_category_id(self):
+		# Category has the format {name - id} so we only want the id
 		category = self.category.get().strip().split(' - ')
 
 		return category[1].strip()

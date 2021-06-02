@@ -219,12 +219,8 @@ class Table:
     # Edit row on double click
     # This method will be fired from table_render()
     def table_row_create(self):
-        print('Create table')
-        # # Clean the values
-        # filter_values = []
-        #
-        # # Edit the row values
-        # Crud(self, filter_values).create()
+        # Edit the row values
+        Crud(self, []).render(action='create')
 
 
     # Edit row on double click
@@ -243,7 +239,7 @@ class Table:
             filter_values.append(str(i).replace('\n', ' ').replace(config.empty_results, '').strip())
 
         # Edit the row values
-        Crud(self, filter_values).render()
+        Crud(self, filter_values).render(action='edit')
 
     """
         The Table auxiliary methods: 

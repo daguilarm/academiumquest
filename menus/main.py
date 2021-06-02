@@ -63,7 +63,8 @@ class MenuBar(tk.Menu):
 
     # Create row
     def question_create(self):
-        tabla = self.create_tabla()
+        table = self.create_table()
+        table.table_row_create()
 
 
     # Edit row
@@ -85,7 +86,7 @@ class MenuBar(tk.Menu):
         sys.exit(0)
 
     # Create Tabla
-    def create_tabla(self):
+    def create_table(self):
         return Table(
             self.parent.root,
             self.parent.max_width,
