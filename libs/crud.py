@@ -338,18 +338,22 @@ class Crud:
 			'type': self.type.get().strip(),
 		}
 
+		# Check for validation
+		validation = validate_field(fields)
+
 		# Edit action
 		if action == 'edit':
-			validation = validate_field(fields)
+			# If validation is correct
 			if validation:
 				operation = sql.questions_update(fields)
 		# Create action
 		else:
-			validation = validate_field(fields)
+			# If validation is correct
 			if validation:
 				pass
 
-		# If validation in correct
+		# If validation in correct we can continue, else we have to fill the fields and start over...
+		# Check if the operation is correct
 		if validation:
 			# Close the window and update the application
 			self.table.refresh(self.table)
@@ -456,7 +460,10 @@ def validate_field(values):
 		value = values[field]
 
 		# Check validation
-		if (type(value) == int and value <= 0) or len(value) <= 0:
+		if type(value) == int and value <= 0:
+			messages.append('El campo {} es obligatorio'.format(fields[field]))
+
+		if type(value) == str and len(value) <= 0:
 			messages.append('El campo {} es obligatorio'.format(fields[field]))
 
 	# If validation error
