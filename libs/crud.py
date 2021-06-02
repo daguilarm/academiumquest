@@ -3,8 +3,13 @@ import tkinter
 from tkinter import ttk, INSERT, messagebox
 from tkinter.ttk import Style
 
+
 # CRUD
 class Crud:
+	"""
+		All the CRUD actions and methods described here are for libs/table.py
+	"""
+
 	def __init__(self, table, values):
 		self.table = table
 		self.root = self.table.root
@@ -25,6 +30,7 @@ class Crud:
 		# Define the fonts
 		self.font = tkinter.font.Font(family="Verdana", size=14)
 		self.font_title = tkinter.font.Font(family="Verdana", size=28)
+		self.font_button = tkinter.font.Font(family="Verdana", size=18)
 
 		# Field config
 		self.field = {
@@ -55,6 +61,11 @@ class Crud:
 
 	# Edit values
 	def edit(self):
+		"""
+			CRUD action edit:
+				- All the methods and parameters necessaries for update are here.
+				- All the fields has been packed in methods in order to be reused in other actions
+		"""
 		self.action = 'edit'
 
 		# Set the title
@@ -96,6 +107,13 @@ class Crud:
 		# Action buttons
 		self.field_buttons()
 
+	""" 
+		All the field methods are packed belongs.
+		Each field has it own method.
+		Each method calculate it own position in the grid, using the 'self.row' variable.
+		This methods are reusable for 'edit' or 'create' actions, using the 'self.action' variable.
+	"""
+
 	# Field category
 	def field_category(self):
 		# Update row
@@ -123,7 +141,7 @@ class Crud:
 		)
 		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
-		# Item bind from the database
+		# If action is EDIT: Item bind from the database
 		if self.action == 'edit':
 			# We have to search the id in the filters
 			for category in self.categories:
@@ -149,8 +167,9 @@ class Crud:
 		field = tkinter.Text(self.crud, height=10, font=self.font)
 		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
-		# Item bind from the database
-		field.insert(INSERT, self.values[3])
+		# If action is EDIT: Item bind from the database
+		if self.action == 'edit':
+			field.insert(INSERT, self.values[3])
 
 		return field
 
@@ -170,8 +189,9 @@ class Crud:
 		field = tkinter.Text(self.crud, height=5, font=self.font)
 		field.grid(self.field, row=self.row, column=1, columnspan=2)
 
-		# Item bind from the database
-		field.insert(INSERT, self.values[3 + number])
+		# If action is EDIT: Item bind from the database
+		if self.action == 'edit':
+			field.insert(INSERT, self.values[3 + number])
 
 		return field
 
@@ -197,8 +217,9 @@ class Crud:
 		)
 		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
-		# Item bind from the database
-		field.set(self.values[8])
+		# If action is EDIT: Item bind from the database
+		if self.action == 'edit':
+			field.set(self.values[8])
 
 		return field
 
@@ -224,10 +245,17 @@ class Crud:
 		)
 		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
-		# Item bind from the database
-		field.set(self.values[9])
+		# If action is EDIT: Item bind from the database
+		if self.action == 'edit':
+			field.set(self.values[9])
 
 		return field
+
+	""" 
+		All the buttons methods are packed belongs.
+		The buttons calculate it own position in the grid, using the 'self.row' variable.
+		The button: 'button_action' is reusable for 'edit' or 'create' actions, using the 'self.action' variable.
+	"""
 
 	# Action buttons
 	def field_buttons(self):
@@ -243,15 +271,26 @@ class Crud:
 		)
 		button_exit.grid(row=self.row, column=1, padx=10, pady=10, sticky='we')
 
-		# Action button
 		# Define action base on self.action...
-		button_update = ttk.Button(
+		if self.action == 'edit':
+			action_text = 'Editar'
+			action_exec = 'edit'
+		else:
+			action_text = 'Crear'
+			action_exec = 'create'
+
+		# Action button
+		button_action = ttk.Button(
 			self.crud,
-			text='Editar',
-			command=lambda: self.crud_execute(action='edit'),
+			text=action_text,
+			command=lambda: self.crud_execute(action=action_exec),
 			style='Regular.TButton',
 		)
-		button_update.grid(row=self.row, column=2, padx=10, pady=10, sticky='we')
+		button_action.grid(row=self.row, column=2, padx=10, pady=10, sticky='we')
+
+	""" 
+		This method execute the actions: edit or create.
+	"""
 
 	# Update or Create values
 	def crud_execute(self, action):
@@ -279,30 +318,17 @@ class Crud:
 		self.crud.destroy()
 
 		# Show success or fail messages
-		self.crud_execute_message(operation)
+		crud_execute_message(operation)
+
+	""" 
+		All the auxiliary methods.
+	"""
 
 	# Get the category ID
 	def get_category_id(self):
 		category = self.category.get().strip().split(' - ')
 
 		return category[1].strip()
-
-	# Success or fail messages
-	def crud_execute_message(self, operation):
-		# Success
-		if operation:
-			tkinter.messagebox.showinfo(
-				title='Recurso actualizado',
-				message='Se ha realizado con éxito la operación de edición del recurso.'
-			)
-
-		# Fail
-		else:
-			tkinter.messagebox.showerror(
-				title='Error al actuailizar recurso',
-				message='Ha ocurrido un error al actualizar el recurso.\n' +
-						'Si el error persiste, por favor, contacte con el administrador del sistema.'
-			)
 
 	# Determine the window position
 	def crud_position(self):
@@ -317,15 +343,17 @@ class Crud:
 
 		style.configure(
 			'Delete.TButton',
-			font=self.font,
+			font=self.font_button,
 			background='red',
 			borderwidth=0,
+			padding=15,
 		)
 
 		style.configure(
 			'Regular.TButton',
-			font=self.font,
+			font=self.font_button,
 			borderwidth=0,
+			padding=15,
 		)
 
 	# Destroy all open windows
@@ -335,3 +363,21 @@ class Crud:
 			# If it is not the root...
 			if '!toplevel' in str(items):
 				items.destroy()
+
+
+# Message alert: Success or fail messages
+def crud_execute_message(operation):
+	# Success
+	if operation:
+		tkinter.messagebox.showinfo(
+			title='Recurso actualizado',
+			message='Se ha realizado con éxito la operación de edición del recurso.'
+		)
+
+	# Fail
+	else:
+		tkinter.messagebox.showerror(
+			title='Error al actuailizar recurso',
+			message='Ha ocurrido un error al actualizar el recurso.\n' +
+			'Si el error persiste, por favor, contacte con el administrador del sistema.'
+		)

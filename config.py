@@ -1,3 +1,7 @@
+"""
+    All the configuration variables
+"""
+
 # Columns
 columns = {
     # Table labels

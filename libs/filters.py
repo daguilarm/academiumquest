@@ -4,6 +4,10 @@ from tkinter import ttk
 
 
 class Filters:
+    """
+        The class to manage the filters:
+            - Generate all the database filters for the Table.
+    """
     def __init__(self, app):
         self.app = app
 
@@ -20,6 +24,14 @@ class Filters:
         self.filter_by_type()
         self.filter_by_category()
         self.filter_by_used()
+
+    """
+        Filters types:
+            - Filter by used. This filter will show only the results with a empty 'used_at' column.
+            - Filter by type. Will return the results base on the 'type' column.
+            - Filter by category. Will return the results base on the 'category_id' column.
+            - All the filters has a 'callback' in order to refresh the table with the new results.
+    """
 
     def filter_by_used(self):
         # Filter by used

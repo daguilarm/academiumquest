@@ -1,10 +1,16 @@
+import config
 from tkinter.font import Font
+
+"""
+    All the static methods:
+        - table_cell_value() -> Resolve the table cell value base on the width.
+        - table_cell_wrap() -> A helper function that will wrap a given value based on column width.
+        - column_width() -> Calculate the column width base on the screen width.
+        - format_date() -> Format date from database format.
+"""
 
 
 # Resolve the table cell value base on the width
-import config
-
-
 def table_cell_value(columns_width, max_width, columns, row):
     # Default values
     result = []
@@ -29,11 +35,6 @@ def table_cell_value(columns_width, max_width, columns, row):
         result.append(table_cell_wrap(value, calculate_width))
 
     return result
-
-
-# Calculate the column width base on the screen width
-def column_width(max_width, percent):
-    return round(max_width * int(percent) / 100)
 
 
 # A helper function that will wrap a given value based on column width
@@ -66,6 +67,11 @@ def table_cell_wrap(val, width, pad=80):
 
         # Join the lines
         return '\n'.join(lines)
+
+
+# Calculate the column width base on the screen width
+def column_width(max_width, percent):
+    return round(max_width * int(percent) / 100)
 
 
 # Format date from database format

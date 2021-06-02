@@ -10,6 +10,13 @@ from libs import static
 
 # Create table
 class Table:
+    """
+        The Table class:
+            - Use the libs/crud.py for all the CRUD actions.
+            - Use the libs/filters.py for filtering results.
+            - Use the libs/orm.py for connect with the database.
+    """
+
     def __init__(
             self,
             root,
@@ -24,7 +31,8 @@ class Table:
         self.root = root
 
         # Table name
-        self.title = 'Preguntas para EIR y OPE'
+        # self.title = 'Preguntas para EIR y OPE'
+        self.title = 'Ejemplo de CRUD'
 
         # Set default database values
         self.db_per_page = db_per_page
@@ -51,7 +59,7 @@ class Table:
         self.current_filters = []
 
         # Get the values from the database
-        results = sql.questions(
+        self.results = sql.questions(
             self.db_per_page,
             self.db_page,
             self.db_order,
@@ -59,17 +67,28 @@ class Table:
             self.db_filter,
         )
 
-        # Render table
-        self.render(results)
+        # Render the table
+        self.table_render(self.results)
 
-        # Render pagination
-        self.table_pagination(results)
+        # Render table pagination
+        self.table_pagination(self.results)
 
-        # Filters
-        self.filters = Filters(self)
+        # Render the table filters
+        # The Filter class from libs/filters.py
+        self.table_filters = Filters(self)
+
+    """
+        The Table operations:
+            - Render table: using the method -> table_render()
+            - Paginate table results:  using the method -> table_pagination()
+                - Previous page: using the method -> prev_page()
+                - Next page: using the method -> next_page()
+            - Sort the table columns by single click: using the method -> table_sort_columns()
+            - Edit table rows: using the method -> table_row_edit()
+    """
 
     # Render the table
-    def render(self, results):
+    def table_render(self, results):
         title_label = tkinter.Label(self.root, text=self.title, font=('Verdana', 30), pady=20)
         title_label.grid(row=0, column=0, columnspan=self.columns_total, sticky='w', padx=20)
 
@@ -80,7 +99,7 @@ class Table:
             self.table.heading(
                 col,
                 text=self.headers[i],
-                command=lambda _col=col: self.sort(_col, self.db_direction)
+                command=lambda _col=col: self.table_sort_columns(_col, self.db_direction)
             )
 
             # Define the column width
@@ -101,7 +120,11 @@ class Table:
 
             self.table.insert("", "end", values=list_of_values)
 
-            self.table.bind("<Double-1>", self.on_double_click)
+            """ 
+                Create a double click event for edit row.
+                This event will fired the table_row_edit() method
+            """
+            self.table.bind("<Double-1>", self.table_row_edit)
 
         # Set the table grid
         self.table.grid(row=1, column=0, columnspan=self.columns_total)
@@ -159,20 +182,6 @@ class Table:
             foreground='#666666'
         ).grid(row=12, column=2, padx=10)
 
-    # Order table columns
-    def sort(self, order_by, direction):
-        # Define order
-        if direction == 'ASC':
-            self.db_direction = 'DESC'
-        else:
-            self.db_direction = 'ASC'
-
-        # Define column to order by...
-        self.db_order = order_by
-
-        # Refresh the table
-        self.refresh(self)
-
     # Pagination: previous page
     def prev_page(self, current):
         # Set the minimum page in 1
@@ -193,8 +202,23 @@ class Table:
             # Refresh the table
             self.refresh(self)
 
+    # Sort table columns
+    def table_sort_columns(self, order_by, direction):
+        # Define order
+        if direction == 'ASC':
+            self.db_direction = 'DESC'
+        else:
+            self.db_direction = 'ASC'
+
+        # Define column to order by...
+        self.db_order = order_by
+
+        # Refresh the table
+        self.refresh(self)
+
     # Edit row on double click
-    def on_double_click(self, event):
+    # This method will be fired from table_render()
+    def table_row_edit(self, event):
         # Get the row
         row = self.table.focus()
 
@@ -209,6 +233,12 @@ class Table:
 
         # Edit the row values
         Crud(self, filter_values).edit()
+
+    """
+        The Table auxiliary methods: 
+            - Refresh the table. 
+            - Reset the table.
+    """
 
     # Refresh table
     def refresh(self, app):

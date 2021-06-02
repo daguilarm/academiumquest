@@ -1,6 +1,10 @@
 # Created by @daguilarm at 24/5/21
 from orator import DatabaseManager
 
+"""
+    The ORM configuration: 
+"""
+
 databases = {
     'sqlite': {
         'driver': 'sqlite',
@@ -10,6 +14,11 @@ databases = {
 }
 
 db = DatabaseManager(databases)
+
+
+"""
+    Queries for questions table: 
+"""
 
 
 # Get the table results
@@ -71,6 +80,12 @@ def questions_update(fields):
             'type': fields.get('type'),
         }
     )
+
+
+"""
+    Queries for categories table: 
+"""
+
 
 # Get all the categories
 def categories():

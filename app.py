@@ -6,6 +6,10 @@ from ttkbootstrap import Style
 
 
 class Application(tkinter.Frame):
+    """
+        The main application Class.
+        It will manage all the application operations.
+    """
     def __init__(self, root):
         # Initialize the application frame
         tkinter.Frame.__init__(self, root)
