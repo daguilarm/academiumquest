@@ -8,7 +8,7 @@ columns = {
     'headers': [
         'ID',
         'Usuario',
-        'Asignatura',
+        'Tema',
         'Preguntas',
         'Respuesta 1',
         'Respuesta 2',
@@ -33,7 +33,7 @@ columns = {
         'used'
     ],
     # Width in %
-    'width': ['2', '5', '4', '40', '9', '9', '9', '9', '4', '4', '5'],
+    'width': ['2', '4', '3', '39', '10', '10', '10', '10', '4', '3', '5'],
 }
 
 # Database defaults

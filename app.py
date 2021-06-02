@@ -51,7 +51,7 @@ class Application(tkinter.Frame):
     # Application GUI
     def __init(self):
         # Set column header style
-        self.style.configure('Treeview', rowheight=100, font=('Verdana', 12))
+        self.style.configure('Treeview', rowheight=101, font=('Verdana', 12))
         self.style.configure('Treeview.Heading', padding=15, font=('Verdana', 14), relief='ridge')
 
         # Set the combobox font for all the application

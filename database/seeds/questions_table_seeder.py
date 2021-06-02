@@ -24,6 +24,7 @@ def with_insert(self, i):
         'user_id': 1,
         'category_id': random_number(1, 4),
         'question': fake.paragraph(nb_sentences=10),
+        'notes': fake.paragraph(nb_sentences=4),
         'answer_1': fake.paragraph(nb_sentences=2),
         'answer_2': fake.paragraph(nb_sentences=1),
         'answer_3': fake.paragraph(nb_sentences=3),

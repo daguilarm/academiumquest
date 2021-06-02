@@ -32,7 +32,7 @@ class Table:
 
         # Table name
         # self.title = 'Preguntas para EIR y OPE'
-        self.title = 'Ejemplo de CRUD'
+        self.title = 'Preguntas EIR y OPE'
 
         # Set default database values
         self.db_per_page = db_per_page
@@ -160,7 +160,7 @@ class Table:
             text='⇦ Anterior',
             command=lambda: self.prev_page(self.db_page),
             foreground='#666666'
-        ).grid(row=12, column=0, padx=10)
+        ).grid(row=12, column=0, padx=10, pady=10)
 
         # Reset table
         tkinter.Button(
@@ -171,7 +171,7 @@ class Table:
             text='⟳ Reiniciar',
             command=lambda: self.reset(self),
             foreground='red'
-        ).grid(row=12, column=1, padx=10)
+        ).grid(row=12, column=1, padx=10, pady=10)
 
         # Next button
         tkinter.Button(

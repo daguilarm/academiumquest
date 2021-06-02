@@ -62,6 +62,16 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
     # print(query.to_sql())
     return query.paginate(db_total_pages, db_page)
 
+
+# Update questions
+def questions_notes(item_id):
+    return db.\
+        table('questions').\
+        where('id', item_id).\
+        select('questions.notes AS note').\
+        pluck('note')
+
+
 # Update questions
 def questions_update(fields):
     return db.\
@@ -71,6 +81,7 @@ def questions_update(fields):
         {
             'category_id': fields.get('category'),
             'question': fields.get('question'),
+            'notes': fields.get('notes'),
             'answer_1': fields.get('answer_1'),
             'answer_2': fields.get('answer_2'),
             'answer_3': fields.get('answer_3'),
@@ -79,7 +90,6 @@ def questions_update(fields):
             'type': fields.get('type'),
         }
     )
-
 
 """
     Queries for categories table: 

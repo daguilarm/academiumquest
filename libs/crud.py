@@ -15,10 +15,6 @@ class Crud:
 		self.root = self.table.root
 		self.values = values
 
-		# Crud action
-		self.action = tkinter.StringVar()
-		self.action_text = tkinter.StringVar()
-
 		# Destroy all the open windows
 		self.destroy_windows()
 
@@ -43,6 +39,10 @@ class Crud:
 		# Define the styles
 		self.crud_style()
 
+		# Crud action
+		self.action = tkinter.StringVar()
+		self.action_text = tkinter.StringVar()
+
 		# Categories
 		self.categories = list(sql.categories())
 
@@ -53,6 +53,7 @@ class Crud:
 		self.id = int(self.values[0]) if self.values else 0
 		self.category = tkinter.StringVar()
 		self.question = tkinter.StringVar()
+		self.notes = tkinter.StringVar()
 		self.answer_1 = tkinter.StringVar()
 		self.answer_2 = tkinter.StringVar()
 		self.answer_3 = tkinter.StringVar()
@@ -90,6 +91,9 @@ class Crud:
 
 		# Question field
 		self.question = self.field_question()
+
+		# Notes field
+		self.notes = self.field_notes()
 
 		# Answer 1
 		self.answer_1 = self.field_answer(1)
@@ -169,12 +173,42 @@ class Crud:
 		).grid(self.field, row=self.row, column=0)
 
 		# Field
-		field = tkinter.Text(self.crud, height=10, font=self.font)
+		field = tkinter.Text(
+			self.crud,
+			height=10,
+			font=self.font,
+		)
 		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
 		# If action is EDIT: Item bind from the database
 		if self.action == 'edit':
 			field.insert(INSERT, self.values[3])
+
+		return field
+
+	# Field notes
+	def field_notes(self):
+		# Update row
+		self.row += 1
+
+		# Label
+		tkinter.Label(
+			self.crud,
+			text="Notas",
+			font=self.font,
+		).grid(self.field, row=self.row, column=0)
+
+		# Field
+		field = tkinter.Text(
+			self.crud,
+			height=5,
+			font=self.font,
+		)
+		field.grid(self.field, row=self.row, column=1, columnspan=3)
+
+		# If action is EDIT: Item bind from the database
+		if self.action == 'edit':
+			field.insert(INSERT, sql.questions_notes(self.id))
 
 		return field
 
@@ -228,7 +262,7 @@ class Crud:
 
 		return field
 
-	# Correct answer
+	# Field type
 	def field_type(self):
 		# Update row
 		self.row += 1
@@ -295,6 +329,7 @@ class Crud:
 			'id': self.id,
 			'category': int(self.get_category_id()),
 			'question': self.question.get('1.0', 'end').strip(),
+			'notes': self.notes.get('1.0', 'end').strip(),
 			'answer_1': self.answer_1.get('1.0', 'end').strip(),
 			'answer_2': self.answer_2.get('1.0', 'end').strip(),
 			'answer_3': self.answer_3.get('1.0', 'end').strip(),
@@ -331,7 +366,7 @@ class Crud:
 	# Determine the window position
 	def crud_position(self):
 		x = (self.crud.winfo_screenwidth() / 2) - 350
-		y = 250
+		y = 100
 		self.crud.geometry("+%d+%d" % (x, y))
 
 	# Define the CRUD styles
@@ -379,3 +414,15 @@ def crud_execute_message(operation):
 			message='Ha ocurrido un error al realizar la operación.\n' +
 			'Si el error persiste, por favor, contacte con el administrador del sistema.'
 		)
+
+
+# Validate fields
+def validate_field(values):
+	# See conditions
+	for value in values:
+		# Required condition
+		if values == 'required':
+			if len(value) > 0:
+				return True
+			else:
+				tkinter.messagebox.showwarning("Alert", "El campo {} es obligatorio".format(field))

@@ -13,6 +13,7 @@ class CreateQuestionsTable(Migration):
             table.integer('user_id').unsigned().index()
             table.integer('category_id').unsigned().index()
             table.text('question')
+            table.text('notes')
             table.text('answer_1')
             table.text('answer_2')
             table.text('answer_3')

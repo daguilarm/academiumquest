@@ -38,7 +38,7 @@ def table_cell_value(columns_width, max_width, columns, row):
 
 
 # A helper function that will wrap a given value based on column width
-def table_cell_wrap(val, width, pad=80):
+def table_cell_wrap(val, width, pad=1):
     # Set the font
     f = Font(font='TkDefaultFont')
 
