@@ -1,7 +1,7 @@
 import config
 import tkinter
 from libs.table import Table
-from menu import MenuBar
+from menus.main import MenuBar
 from ttkbootstrap import Style
 
 
@@ -16,10 +16,6 @@ class Application(tkinter.Frame):
 
         # Define the application root
         self.root = root
-
-        # Define the application menu
-        self.menu = MenuBar(self)
-        self.root.config(menu=self.menu)
 
         # Configure the root for the Application
         self.root.title("Academium Quest - Premium version")
@@ -44,6 +40,10 @@ class Application(tkinter.Frame):
 
         # Define the filters
         self.filters = []
+
+        # Define the application menu
+        self.menu = MenuBar(self)
+        self.root.config(menu=self.menu)
 
         # Initialize the application user interface
         self.__init()

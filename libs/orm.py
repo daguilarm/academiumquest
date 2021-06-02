@@ -1,4 +1,3 @@
-# Created by @daguilarm at 24/5/21
 from orator import DatabaseManager
 
 """

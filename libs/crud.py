@@ -10,7 +10,7 @@ class Crud:
 		All the CRUD actions and methods described here are for libs/table.py
 	"""
 
-	def __init__(self, table, values):
+	def __init__(self, table, values = ''):
 		self.table = table
 		self.root = self.table.root
 		self.values = values
@@ -18,8 +18,8 @@ class Crud:
 		# Crud action
 		self.action = ''
 
-		# Reset all the open windows
-		self.crud_reset_windows()
+		# Destroy all the open windows
+		self.destroy_windows()
 
 		# Define container
 		self.crud = tkinter.Toplevel(self.root)
@@ -59,14 +59,14 @@ class Crud:
 		self.correct = tkinter.IntVar()
 		self.type = tkinter.StringVar()
 
-	# Edit values
-	def edit(self):
+	# Create or Edit values
+	def render(self, action='edit'):
 		"""
 			CRUD action edit:
 				- All the methods and parameters necessaries for update are here.
 				- All the fields has been packed in methods in order to be reused in other actions
 		"""
-		self.action = 'edit'
+		self.action = action
 
 		# Set the title
 		self.crud.wm_title("Editar pregunta")
@@ -357,7 +357,7 @@ class Crud:
 		)
 
 	# Destroy all open windows
-	def crud_reset_windows(self):
+	def destroy_windows(self):
 		# Get all the items
 		for items in self.root.winfo_children():
 			# If it is not the root...
@@ -370,14 +370,14 @@ def crud_execute_message(operation):
 	# Success
 	if operation:
 		tkinter.messagebox.showinfo(
-			title='Recurso actualizado',
-			message='Se ha realizado con éxito la operación de edición del recurso.'
+			title='Operación realizada',
+			message='Se ha realizado con éxito la operación.'
 		)
 
 	# Fail
 	else:
 		tkinter.messagebox.showerror(
-			title='Error al actuailizar recurso',
-			message='Ha ocurrido un error al actualizar el recurso.\n' +
+			title='Se ha producido un error',
+			message='Ha ocurrido un error al realizar la operación.\n' +
 			'Si el error persiste, por favor, contacte con el administrador del sistema.'
 		)
