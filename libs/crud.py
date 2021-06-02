@@ -327,30 +327,36 @@ class Crud:
 	def crud_execute(self, action):
 		fields = {
 			'id': self.id,
-			'category': int(self.get_category_id()),
+			'category': self.get_category_id(),
 			'question': self.question.get('1.0', 'end').strip(),
 			'notes': self.notes.get('1.0', 'end').strip(),
 			'answer_1': self.answer_1.get('1.0', 'end').strip(),
 			'answer_2': self.answer_2.get('1.0', 'end').strip(),
 			'answer_3': self.answer_3.get('1.0', 'end').strip(),
 			'answer_4': self.answer_4.get('1.0', 'end').strip(),
-			'correct': int(self.correct.get().strip()),
+			'correct': self.get_correct_id(),
 			'type': self.type.get().strip(),
 		}
 
 		# Edit action
 		if action == 'edit':
-			operation = sql.questions_update(fields)
+			validation = validate_field(fields)
+			if validation:
+				operation = sql.questions_update(fields)
 		# Create action
 		else:
-			pass
+			validation = validate_field(fields)
+			if validation:
+				pass
 
-		# Close the window and update the application
-		self.table.refresh(self.table)
-		self.crud.destroy()
+		# If validation in correct
+		if validation:
+			# Close the window and update the application
+			self.table.refresh(self.table)
+			self.crud.destroy()
 
-		# Show success or fail messages
-		crud_execute_message(operation)
+			# Show success or fail messages
+			crud_execute_message(operation)
 
 	""" 
 		All the auxiliary methods.
@@ -361,7 +367,18 @@ class Crud:
 		# Category has the format {name - id} so we only want the id
 		category = self.category.get().strip().split(' - ')
 
-		return category[1].strip()
+		# Check if we have two results
+		if len(category) <= 1:
+			return 0
+
+		return int(category[1].strip()) if category[1] else 0
+
+	# Get the correct answer
+	def get_correct_id(self):
+		# Get the correct answer
+		correct = self.correct.get().strip()
+
+		return int(correct) if correct else 0
 
 	# Determine the window position
 	def crud_position(self):
@@ -418,11 +435,33 @@ def crud_execute_message(operation):
 
 # Validate fields
 def validate_field(values):
+	# Empty messages
+	messages = []
+
+	# Fields
+	fields = {
+		'category': 'Asignatura',
+		'question': 'Pregunta',
+		'answer_1': 'Respuesta 1',
+		'answer_2': 'Respuesta 2',
+		'answer_3': 'Respuesta 3',
+		'answer_4': 'Respuesta 4',
+		'correct': 'Respuesta correcta',
+		'type': 'Tipo',
+	}
+
 	# See conditions
-	for value in values:
-		# Required condition
-		if values == 'required':
-			if len(value) > 0:
-				return True
-			else:
-				tkinter.messagebox.showwarning("Alert", "El campo {} es obligatorio".format(field))
+	for field in fields:
+		# Set value
+		value = values[field]
+
+		# Check validation
+		if (type(value) == int and value <= 0) or len(value) <= 0:
+			messages.append('El campo {} es obligatorio'.format(fields[field]))
+
+	# If validation error
+	if messages:
+		tkinter.messagebox.showerror('Error de validación', '\n\n'.join(messages))
+		return False
+
+	return True

@@ -34,8 +34,8 @@ class MenuBar(tk.Menu):
         self.add_cascade(label='Archivo',underline=0, menu=file_menu)
 
         # File options
-        file_menu.add_command(label='Acerca de...', underline=1)
-        file_menu.add_command(label='Buscar actualizaciones...', underline=1)
+        file_menu.add_command(label='Acerca de...', underline=1, state='disable')
+        file_menu.add_command(label='Buscar actualizaciones...', underline=1, state='disable')
 
         file_menu.add_separator()
 
@@ -62,7 +62,7 @@ class MenuBar(tk.Menu):
 
         question_menu.add_separator()
 
-        question_menu.add_command(label='Últimas preguntas', underline=1)
+        question_menu.add_command(label='Últimas preguntas', underline=1, state='disable')
 
     # Create row
     def question_create(self):
