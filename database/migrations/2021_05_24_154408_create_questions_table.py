@@ -18,10 +18,10 @@ class CreateQuestionsTable(Migration):
             table.text('answer_2')
             table.text('answer_3')
             table.text('answer_4')
-            table.text('answer_5')
+            table.text('answer_5').default('')
             table.char('correct', 1)
             table.char('type', 3)
-            table.timestamp('used_at')
+            table.timestamp('used_at').default('')
             table.timestamps()
 
     def down(self):

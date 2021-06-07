@@ -26,10 +26,8 @@ def questions(db_total_pages, db_page, db_order_by, db_direction, db_filter):
     query = db.\
         table('questions').\
         join('categories', 'categories.id', '=', 'questions.category_id').\
-        join('users', 'users.id', '=', 'questions.user_id').\
         select(
             'questions.id AS id',
-            'users.name AS user',
             'categories.name AS category',
             'questions.question AS question',
             'questions.answer_1 AS answer_1',
@@ -70,6 +68,28 @@ def questions_notes(item_id):
         where('id', item_id).\
         select('questions.notes AS note').\
         pluck('note')
+
+
+# Create questions
+def questions_create(fields):
+    return db.\
+        table('questions').\
+        insert_get_id(
+        {
+            'user_id': 1,
+            'category_id': fields.get('category'),
+            'question': fields.get('question'),
+            'notes': fields.get('notes'),
+            'answer_1': fields.get('answer_1'),
+            'answer_2': fields.get('answer_2'),
+            'answer_3': fields.get('answer_3'),
+            'answer_4': fields.get('answer_4'),
+            'answer_5': '',
+            'correct': fields.get('correct'),
+            'type': fields.get('type'),
+            'used_at': '',
+        }
+    )
 
 
 # Update questions

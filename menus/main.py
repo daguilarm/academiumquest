@@ -49,16 +49,19 @@ class MenuBar(tk.Menu):
 
     # Questions menu
     def questions(self):
-        # Create the file container
+        # Create the questions container
         question_menu = tk.Menu(self, self.config)
         self.add_cascade(label='Preguntas', underline=0, menu=question_menu)
 
-        # File options
+        # Questions options
         question_menu.add_command(label='Nueva...', underline=1, command=self.question_create, accelerator='cmd+n')
         self.bind_all('<Command-n>', self.question_create)
 
         question_menu.add_command(label='Editar...', underline=1, accelerator='cmd+e')
         self.bind_all('<Command-e>', self.question_edit)
+
+        question_menu.add_command(label='Reiniciar', underline=1, command=self.table.reset, accelerator='cmd+r')
+        self.bind_all('<Command-r>', self.table.reset)
 
         question_menu.add_separator()
 

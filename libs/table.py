@@ -53,7 +53,7 @@ class Table:
 
         # Create pagination
         self.pagination = tkinter.Frame(self.root)
-        self.pagination.grid(row=12, columnspan=self.columns_total, padx=40, pady=20)
+        self.pagination.grid(row=11, columnspan=self.columns_total, padx=40, pady=20)
 
         # Current filters
         self.current_filters = []
@@ -222,6 +222,7 @@ class Table:
 
     # Edit row on double click
     # This method will be fired from table_render()
+    # All the magic is in the libs.crud.py
     def table_row_create(self):
         # Edit the row values
         Crud(self, []).render(action='create')
@@ -263,7 +264,7 @@ class Table:
         )
 
     # Reset table
-    def reset(self, app):
+    def reset(self):
         # Reset the variables
         self.db_per_page = config.database['per_page']
         self.db_page = config.database['page']

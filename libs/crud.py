@@ -154,7 +154,7 @@ class Crud:
 		if self.action == 'edit':
 			# We have to search the id in the filters
 			for category in self.categories:
-				if category.get('name') == self.values[2]:
+				if category.get('name') == self.values[1]:
 					# Now we have the category name
 					field.set('{} - {}'.format(category.get('name'), category.get('id')))
 
@@ -182,7 +182,7 @@ class Crud:
 
 		# If action is EDIT: Item bind from the database
 		if self.action == 'edit':
-			field.insert(INSERT, self.values[3])
+			field.insert(INSERT, self.values[2])
 
 		return field
 
@@ -206,7 +206,7 @@ class Crud:
 		)
 		field.grid(self.field, row=self.row, column=1, columnspan=3)
 
-		# If action is EDIT: Item bind from the database
+		# If action is EDIT: Insert the item from the database
 		if self.action == 'edit':
 			field.insert(INSERT, sql.questions_notes(self.id))
 
@@ -228,9 +228,9 @@ class Crud:
 		field = tkinter.Text(self.crud, height=5, font=self.font)
 		field.grid(self.field, row=self.row, column=1, columnspan=2)
 
-		# If action is EDIT: Item bind from the database
+		# If action is EDIT: Insert the item from the database
 		if self.action == 'edit':
-			field.insert(INSERT, self.values[3 + number])
+			field.insert(INSERT, self.values[2 + number])
 
 		return field
 
@@ -258,7 +258,7 @@ class Crud:
 
 		# If action is EDIT: Item bind from the database
 		if self.action == 'edit':
-			field.set(self.values[8])
+			field.set(self.values[7])
 
 		return field
 
@@ -286,7 +286,7 @@ class Crud:
 
 		# If action is EDIT: Item bind from the database
 		if self.action == 'edit':
-			field.set(self.values[9])
+			field.set(self.values[8])
 
 		return field
 
@@ -350,7 +350,7 @@ class Crud:
 		else:
 			# If validation is correct
 			if validation:
-				pass
+				operation = sql.questions_create(fields)
 
 		# If validation in correct we can continue, else we have to fill the fields and start over...
 		# Check if the operation is correct

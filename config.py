@@ -7,7 +7,6 @@ columns = {
     # Table labels
     'headers': [
         'ID',
-        'Usuario',
         'Tema',
         'Preguntas',
         'Respuesta 1',
@@ -21,7 +20,6 @@ columns = {
     # Database table columns
     'columns': [
         'id',
-        'user',
         'category',
         'question',
         'answer_1',
@@ -33,7 +31,7 @@ columns = {
         'used'
     ],
     # Width in %
-    'width': ['2', '4', '3', '39', '10', '10', '10', '10', '4', '3', '5'],
+    'width': ['2', '6', '40', '10', '10', '10', '10', '4', '3', '5'],
 }
 
 # Database defaults
